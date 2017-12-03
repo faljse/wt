@@ -1,0 +1,283 @@
+<testset>
+  <dataelements>
+    <barType xmlns="http://riddl.org/ns/common-patterns/properties/1.0">VodkaBar</barType>
+    <customerName xmlns="http://riddl.org/ns/common-patterns/properties/1.0">Fritzl</customerName>
+    <repairCount xmlns="http://riddl.org/ns/common-patterns/properties/1.0">1</repairCount>
+  </dataelements>
+  <handlerwrapper>DefaultHandlerWrapper</handlerwrapper>
+  <endpoints>
+    <timeout xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://gruppe.wst.univie.ac.at/~mangler/services/timeout.php</timeout>
+    <customerSendsOrder xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/customerSendsOrder</customerSendsOrder>
+    <customerSendsSpecification xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/customerSendsSpecification</customerSendsSpecification>
+    <buildBaseModel xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/buildBaseModel</buildBaseModel>
+    <orderSeats xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderSeats</orderSeats>
+    <orderToilet xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderToilet</orderToilet>
+    <orderVodkaBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderVodkaBar</orderVodkaBar>
+    <orderWhiskeyBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderWhiskeyBar</orderWhiskeyBar>
+    <orderTequillaBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderTequillaBar</orderTequillaBar>
+    <orderBeerBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderBeerBar</orderBeerBar>
+    <orderSakeBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderSakeBar</orderSakeBar>
+    <waitForParts xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/waitForParts</waitForParts>
+    <assemblePlane xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/assemblePlane</assemblePlane>
+    <testFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/testFlight</testFlight>
+    <evaluateFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/evaluateFlight</evaluateFlight>
+    <repair xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/repair</repair>
+    <deliverPlane xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/deliverPlane</deliverPlane>
+    <receiveConfirmation xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/receiveConfirmation</receiveConfirmation>
+  </endpoints>
+  <positions/>
+  <description>
+    <description xmlns="http://cpee.org/ns/description/1.0">
+      <call id="a1" endpoint="customerSendsOrder">
+        <parameters>
+          <label>Customer sends Order</label>
+          <method>:post</method>
+          <arguments>
+            <timeout>2</timeout>
+            <role>customer</role>
+            <organisation>acme corp</organisation>
+            <link>http://faljse.info:9666/customerSendsOrder</link>
+          </arguments>
+        </parameters>
+        <finalize output="result">data.customerName = "Fritzl"</finalize>
+        <update output="result"/>
+      </call>
+      <parallel wait="-1">
+        <parallel_branch pass="" local="">
+          <call id="a2" endpoint="customerSendsSpecification">
+            <parameters>
+              <label>Customer sends specification</label>
+              <method>:post</method>
+              <arguments>
+                <timeout>2</timeout>
+                <role>customer</role>
+                <organisation>acme corp</organisation>
+                <link>http://faljse.info:9666/customerSendsSpecification</link>
+              </arguments>
+            </parameters>
+            <finalize output="result">data.barType="VodkaBar"</finalize>
+            <update output="result"/>
+          </call>
+          <parallel wait="-1">
+            <parallel_branch pass="" local="">
+              <call id="a5" endpoint="orderSeats">
+                <parameters>
+                  <label>Order Seats</label>
+                  <method>:post</method>
+                  <arguments>
+                    <timeout>2</timeout>
+                    <role>customer</role>
+                    <organisation>acme corp</organisation>
+                    <link>http://faljse.info:9666/orderSeats</link>
+                  </arguments>
+                </parameters>
+              </call>
+            </parallel_branch>
+            <parallel_branch pass="" local="">
+              <call id="a4" endpoint="orderToilet">
+                <parameters>
+                  <label>Order Toilet</label>
+                  <method>:post</method>
+                  <arguments>
+                    <timeout>2</timeout>
+                    <role>customer</role>
+                    <organisation>acme corp</organisation>
+                    <link>http://faljse.info:9666/orderToilet</link>
+                  </arguments>
+                </parameters>
+              </call>
+            </parallel_branch>
+            <parallel_branch pass="" local="">
+              <choose mode="exclusive">
+                <alternative condition="data.barType==&quot;VodkaBar&quot;">
+                  <call id="a6" endpoint="orderVodkaBar">
+                    <parameters>
+                      <label>Order Vodka Bar</label>
+                      <method>:post</method>
+                      <arguments>
+                        <timeout>2</timeout>
+                        <role>customer</role>
+                        <organisation>acme corp</organisation>
+                        <link>http://faljse.info:9666/orderVodkaBar</link>
+                      </arguments>
+                    </parameters>
+                  </call>
+                </alternative>
+                <alternative condition="data.barType==&quot;WhiskeyBar&quot;">
+                  <call id="a7" endpoint="orderWhiskeyBar">
+                    <parameters>
+                      <label>Order Whiskey Bar</label>
+                      <method>:post</method>
+                      <arguments>
+                        <timeout>2</timeout>
+                        <role>customer</role>
+                        <organisation>acme corp</organisation>
+                        <link>http://faljse.info:9666/orderWhiskeyBar</link>
+                      </arguments>
+                    </parameters>
+                  </call>
+                </alternative>
+                <alternative condition="data.barType==&quot;TequillaBar&quot;">
+                  <call id="a8" endpoint="orderTequillaBar">
+                    <parameters>
+                      <label>Order Tequilla Bar</label>
+                      <method>:post</method>
+                      <arguments>
+                        <timeout>2</timeout>
+                        <role>customer</role>
+                        <organisation>acme corp</organisation>
+                        <link>http://faljse.info:9666/orderTequillaBar</link>
+                      </arguments>
+                    </parameters>
+                  </call>
+                </alternative>
+                <alternative condition="data.barType==&quot;BeerBar&quot;">
+                  <call id="a9" endpoint="orderBeerBar">
+                    <parameters>
+                      <label>Order Beer Bar</label>
+                      <method>:post</method>
+                      <arguments>
+                        <timeout>2</timeout>
+                        <role>customer</role>
+                        <organisation>acme corp</organisation>
+                        <link>http://faljse.info:9666/orderBeerBar</link>
+                      </arguments>
+                    </parameters>
+                  </call>
+                </alternative>
+                <alternative condition="data.barType==&quot;SakeBar&quot;">
+                  <call id="a10" endpoint="orderSakeBar">
+                    <parameters>
+                      <label>Order Sake Bar</label>
+                      <method>:post</method>
+                      <arguments>
+                        <timeout>2</timeout>
+                        <role>customer</role>
+                        <organisation>acme corp</organisation>
+                        <link>http://faljse.info:9666/orderSakeBar</link>
+                      </arguments>
+                    </parameters>
+                  </call>
+                </alternative>
+              </choose>
+            </parallel_branch>
+          </parallel>
+        </parallel_branch>
+        <parallel_branch pass="" local="">
+          <call id="a3" endpoint="buildBaseModel">
+            <parameters>
+              <label>Build Base Model</label>
+              <method>:post</method>
+              <arguments>
+                <timeout>2</timeout>
+                <role>customer</role>
+                <organisation>acme corp</organisation>
+                <link>http://faljse.info:9666/buildBaseModel</link>
+              </arguments>
+            </parameters>
+          </call>
+        </parallel_branch>
+      </parallel>
+      <call id="a14" endpoint="waitForParts">
+        <parameters>
+          <label>Wait for Parts</label>
+          <method>:post</method>
+          <arguments>
+            <timeout>2</timeout>
+            <role>customer</role>
+            <organisation>acme corp</organisation>
+            <link>http://faljse.info:9666/waitForParts</link>
+          </arguments>
+        </parameters>
+      </call>
+      <call id="a12" endpoint="assemblePlane">
+        <parameters>
+          <label>Assemble Plane</label>
+          <method>:post</method>
+          <arguments>
+            <timeout>2</timeout>
+            <role>customer</role>
+            <organisation>acme corp</organisation>
+            <link>http://faljse.info:9666/assemblePlane</link>
+          </arguments>
+        </parameters>
+      </call>
+      <loop mode="post_test" condition="">
+        <call id="a16" endpoint="testFlight">
+          <parameters>
+            <label>Test flight</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+            </arguments>
+          </parameters>
+        </call>
+        <call id="a17" endpoint="evaluateFlight">
+          <parameters>
+            <label>Evaluate Flight</label>
+            <method>:post</method>
+            <arguments>
+              <timeout>2</timeout>
+              <role>customer</role>
+              <organisation>acme corp</organisation>
+              <link>http://faljse.info:9666/evaluateFlight</link>
+            </arguments>
+          </parameters>
+        </call>
+        <choose mode="exclusive">
+          <alternative condition="([true, false].sample) == true">
+            <call id="a18" endpoint="repair">
+              <parameters>
+                <label>repair</label>
+                <method>:post</method>
+                <arguments>
+                  <timeout>2</timeout>
+                  <role>customer</role>
+                  <organisation>acme corp</organisation>
+                  <link>http://faljse.info:9666/repair</link>
+                </arguments>
+              </parameters>
+              <finalize output="result">data.repairCount += 1</finalize>
+              <update output="result"/>
+            </call>
+          </alternative>
+          <otherwise/>
+        </choose>
+      </loop>
+      <call id="a15" endpoint="deliverPlane">
+        <parameters>
+          <label>Deliver Plane</label>
+          <method>:post</method>
+          <arguments>
+            <timeout>2</timeout>
+            <role>customer</role>
+            <organisation>acme corp</organisation>
+            <link>http://faljse.info:9666/deliverPlane</link>
+          </arguments>
+        </parameters>
+      </call>
+      <call id="a19" endpoint="receiveConfirmation">
+        <parameters>
+          <label>Receive Confirmation</label>
+          <method>:post</method>
+          <arguments>
+            <timeout>2</timeout>
+            <role>customer</role>
+            <organisation>acme corp</organisation>
+            <link>http://faljse.info:9666/receiveConfirmation</link>
+          </arguments>
+        </parameters>
+      </call>
+    </description>
+  </description>
+  <transformation>
+    <description type="copy"/>
+    <dataelements type="none"/>
+    <endpoints type="none"/>
+  </transformation>
+  <attributes>
+    <info xmlns="http://riddl.org/ns/common-patterns/properties/1.0">a00626177</info>
+    <modeltype xmlns="http://riddl.org/ns/common-patterns/properties/1.0">CPEE</modeltype>
+    <theme xmlns="http://riddl.org/ns/common-patterns/properties/1.0">default</theme>
+  </attributes>
+</testset>
