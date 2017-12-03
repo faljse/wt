@@ -1,0 +1,5 @@
+{
+    "cockpitIP":"192.168.16.16",
+    "cockpitPort":9090,
+    "fakeRPI":true
+}

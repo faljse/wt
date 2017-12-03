@@ -1,0 +1,26 @@
+{
+  "name": "workflow",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "nodemon --nolazy --debug-brk --inspect ./bin/www",
+    "compile": "tsc -p . "
+  },
+  "devDependencies": {
+    "typescript": "^2.6.0"
+  },
+  "dependencies": {
+    "@types/koa": "^2.0.39",
+    "@types/koa-bodyparser": "^3.0.23",
+    "@types/koa-router": "^7.0.22",
+    "@types/koa-send": "^3.3.1",
+    "@types/node": "^8.0.13",
+    "@types/winston": "^2.3.7",
+    "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-router": "^7.2.1",
+    "koa-send": "^4.1.1",
+    "winston": "^2.4.0"
+  }
+}

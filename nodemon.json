@@ -1,0 +1,6 @@
+{
+  "watch": ["src", "views"],
+  "ext": ".ts,.ejs",
+  "ignore": ["src/**/*.spec.ts"],
+  "exec": "ts-node --fast   ./src/index.ts"
+}

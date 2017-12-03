@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2016",
+    "module": "commonjs",
+    "moduleResolution": "Node",
+    "outDir": "dist",
+    "allowJs": true,
+    "sourceMap": true,
+    "strict": false,
+    "alwaysStrict": false,
+    "watch": false,
+    "experimentalDecorators": true
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}
