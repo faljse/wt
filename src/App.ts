@@ -1,5 +1,5 @@
 import * as Koa from 'koa';
-import * as KoaBodyParser from 'koa-bodyparser';
+import * as KoaBody from 'koa-body';
 import * as KoaRouter from 'koa-router';
 import * as KoaSend from 'koa-send';
 
@@ -8,9 +8,7 @@ const log = MyLogger.create("App");
 
 // Creates and configures an ExpressJS web server.
 export class App {
-  ssdpxml: string;
   private koa = new Koa();
-
   //Run configuration methods on the Express instance.
   constructor(private port) {
     this.routes();
@@ -26,11 +24,19 @@ export class App {
   // Configure API endpoints.
   private routes(): void {
     let router = new KoaRouter();
+
     router.get('/', async (ctx, next) => {
       await KoaSend(ctx, '/static/index.html');
+      next();
     });
     router.get('/customerSendsOrder', async (ctx, next) => {
+      log.info(ctx.path);
       await KoaSend(ctx, '/static/customerSendsOrder.html');
+      next();
+    });
+    router.post('/customerSendsOrder', KoaBody(), async (ctx, next) => {
+      ctx.body = JSON.stringify(ctx.request.body);    
+      ctx.type = 'application/json';
       next();
     });
     router.get('/customerSendsSpecification', async (ctx, next) => {
@@ -98,10 +104,10 @@ export class App {
       next();
     });
     router.get('/static/*', async (ctx, next) => {
-      let done = await KoaSend(ctx, ctx.path);
-      await next()
+      log.info(ctx.path);
+      await KoaSend(ctx, ctx.path);
+      next();
     });
-    this.koa.use(KoaBodyParser());
     this.koa.use(router.routes())
     this.koa.use(router.allowedMethods());
   }
