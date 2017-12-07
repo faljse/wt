@@ -49,7 +49,6 @@
               <label>"Customer sends specification"</label>
               <method>:post</method>
               <arguments>
-                <timeout>2</timeout>
                 <role>"customer"</role>
                 <organisation>"acme corp"</organisation>
                 <link>"http://faljse.info:9666/customerSendsSpecification"</link>
@@ -65,10 +64,9 @@
                   <label>"Order Seats"</label>
                   <method>:post</method>
                   <arguments>
-                    <timeout>2</timeout>
-                    <role>"customer"</role>
-                    <organisation>"acme corp"</organisation>
-                    <link>"http://faljse.info:9666/orderSeats"</link>
+				  <amount>77</amount>
+			<from>"martin.kunz@univie.ac.at"</from>
+			<notify>"martin.michael.kunz@gmail.com"</notify>
                   </arguments>
                 </parameters>
               </call>
@@ -79,10 +77,9 @@
                   <label>"Order Toilet"</label>
                   <method>:post</method>
                   <arguments>
-                    <timeout>2</timeout>
-                    <role>"customer"</role>
-                    <organisation>"acme corp"</organisation>
-                    <link>"http://faljse.info:9666/orderToilet"</link>
+				  <amount>2</amount>
+			<from>"martin.kunz@univie.ac.at"</from>
+			<notify>"martin.michael.kunz@gmail.com"</notify>
                   </arguments>
                 </parameters>
               </call>
@@ -95,10 +92,9 @@
                       <label>"Order Vodka Bar"</label>
                       <method>:post</method>
                       <arguments>
-                        <timeout>2</timeout>
-                        <role>"customer"</role>
-                        <organisation>"acme corp"</organisation>
-                        <link>"http://faljse.info:9666/orderVodkaBar"</link>
+                        <amount>1</amount>
+			<from>"martin.kunz@univie.ac.at"</from>
+			<notify>"martin.michael.kunz@gmail.com"</notify>
                       </arguments>
                     </parameters>
                   </call>
@@ -109,10 +105,9 @@
                       <label>"Order Whiskey Bar"</label>
                       <method>:post</method>
                       <arguments>
-                        <timeout>2</timeout>
-                        <role>"customer"</role>
-                        <organisation>"acme corp"</organisation>
-                        <link>"http://faljse.info:9666/orderWhiskeyBar"</link>
+                        <amount>1</amount>
+			<from>"martin.kunz@univie.ac.at"</from>
+			<notify>"martin.michael.kunz@gmail.com"</notify>
                       </arguments>
                     </parameters>
                   </call>
@@ -123,10 +118,9 @@
                       <label>"Order Tequilla Bar"</label>
                       <method>:post</method>
                       <arguments>
-                        <timeout>2</timeout>
-                        <role>"customer"</role>
-                        <organisation>"acme corp"</organisation>
-                        <link>"http://faljse.info:9666/orderTequillaBar"</link>
+                        <amount>1</amount>
+			<from>"martin.kunz@univie.ac.at"</from>
+			<notify>"martin.michael.kunz@gmail.com"</notify>
                       </arguments>
                     </parameters>
                   </call>
@@ -137,10 +131,9 @@
                       <label>"Order Beer Bar"</label>
                       <method>:post</method>
                       <arguments>
-                        <timeout>2</timeout>
-                        <role>"customer"</role>
-                        <organisation>"acme corp"</organisation>
-                        <link>"http://faljse.info:9666/orderBeerBar"</link>
+                        <amount>1</amount>
+			<from>"martin.kunz@univie.ac.at"</from>
+			<notify>"martin.michael.kunz@gmail.com"</notify>
                       </arguments>
                     </parameters>
                   </call>
@@ -151,10 +144,9 @@
                       <label>"Order Sake Bar"</label>
                       <method>:post</method>
                       <arguments>
-                        <timeout>2</timeout>
-                        <role>"customer"</role>
-                        <organisation>"acme corp"</organisation>
-                        <link>"http://faljse.info:9666/orderSakeBar"</link>
+                        <amount>1</amount>
+			<from>"martin.kunz@univie.ac.at"</from>
+			<notify>"martin.michael.kunz@gmail.com"</notify>
                       </arguments>
                     </parameters>
                   </call>
@@ -168,12 +160,11 @@
             <parameters>
               <label>"Build Base Model"</label>
               <method>:post</method>
-              <arguments>
-                <timeout>2</timeout>
-                <role>"customer"</role>
-                <organisation>"acme corp"</organisation>
-                <link>"http://faljse.info:9666/buildBaseModel"</link>
-              </arguments>
+                      <arguments>
+                        <amount>1</amount>
+			<from>"martin.kunz@univie.ac.at"</from>
+			<notify>"martin.michael.kunz@gmail.com"</notify>
+                      </arguments>
             </parameters>
           </call>
         </parallel_branch>
@@ -182,24 +173,20 @@
         <parameters>
           <label>"Wait for Parts"</label>
           <method>:post</method>
-          <arguments>
-            <timeout>2</timeout>
-            <role>"customer"</role>
-            <organisation>"acme corp"</organisation>
-            <link>"http://faljse.info:9666/waitForParts"</link>
-          </arguments>
+		  <arguments>
+			<from>"martin.kunz@univie.ac.at"</from>
+			<notify>"martin.michael.kunz@gmail.com"</notify>
+		  </arguments>
         </parameters>
       </call>
       <call id="a12" endpoint="assemblePlane">
         <parameters>
           <label>"Assemble Plane"</label>
           <method>:post</method>
-          <arguments>
-            <timeout>2</timeout>
-            <role>"customer"</role>
-            <organisation>"acme corp"</organisation>
-            <link>"http://faljse.info:9666/assemblePlane"</link>
-          </arguments>
+		  <arguments>
+			<from>"martin.kunz@univie.ac.at"</from>
+			<notify>"martin.michael.kunz@gmail.com"</notify>
+		  </arguments>
         </parameters>
       </call>
       <loop mode="post_test" condition="">
@@ -208,7 +195,8 @@
             <label>"Test flight"</label>
             <method>:post</method>
             <arguments>
-              <timeout>2</timeout>
+			<from>"martin.kunz@univie.ac.at"</from>
+			<notify>"martin.michael.kunz@gmail.com"</notify>
             </arguments>
           </parameters>
         </call>
