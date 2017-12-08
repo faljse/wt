@@ -3,6 +3,7 @@
     <barType xmlns="http://riddl.org/ns/common-patterns/properties/1.0">"VodkaBar"</barType>
     <customerName xmlns="http://riddl.org/ns/common-patterns/properties/1.0">"Fritzl"</customerName>
     <repairCount xmlns="http://riddl.org/ns/common-patterns/properties/1.0">1</repairCount>
+    <hasSurvived xmlns="http://riddl.org/ns/common-patterns/properties/1.0">false</hasSurvived>
   </dataelements>
   <handlerwrapper>DefaultHandlerWrapper</handlerwrapper>
   <endpoints>
@@ -39,7 +40,7 @@
             <link>"http://faljse.info:9666/customerSendsOrder"</link>
           </arguments>
         </parameters>
-        <finalize output="result">data.customerName = "Fritzl"</finalize>
+        <finalize output="result">data.customerName = result['name']</finalize>
         <update output="result"/>
       </call>
       <parallel wait="-1">
@@ -54,7 +55,7 @@
                 <link>"http://faljse.info:9666/customerSendsSpecification"</link>
               </arguments>
             </parameters>
-            <finalize output="result">data.barType="VodkaBar"</finalize>
+            <finalize output="result">data.barType =  result['barType']</finalize>
             <update output="result"/>
           </call>
           <parallel wait="-1">
@@ -211,9 +212,11 @@
               <link>"http://faljse.info:9666/evaluateFlight"</link>
             </arguments>
           </parameters>
+          <finalize output="result">data.hasSurvived = result['survived']</finalize>
+          <update output="result"/>
         </call>
         <choose mode="exclusive">
-          <alternative condition="([true, false].sample) == true">
+          <alternative condition="data.hasSurvived == true">
             <call id="a18" endpoint="repair">
               <parameters>
                 <label>"repair"</label>
@@ -237,10 +240,8 @@
           <label>"Deliver Plane"</label>
           <method>:post</method>
           <arguments>
-            <timeout>2</timeout>
-            <role>"customer"</role>
-            <organisation>"acme corp"</organisation>
-            <link>"http://faljse.info:9666/deliverPlane"</link>
+      			<from>"martin.kunz@univie.ac.at"</from>
+			      <notify>"martin.michael.kunz@gmail.com"</notify>
           </arguments>
         </parameters>
       </call>
