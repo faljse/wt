@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<organisation xmlns="http://cpee.org/ns/organisation/1.0">
+  <units>
+    <unit id="management">
+      <permissions/>
+    </unit>
+    <unit id="operational">
+      <parent>management</parent>
+      <permissions/>
+    </unit>
+    <unit id="executive">
+      <parent>operational</parent>
+      <permissions/>
+    </unit>	
+  </units>
+  <roles>
+    <role id="sales guy">
+      <permissions/>
+    </role>
+    <role id="support agent">
+      <permissions/>
+    </role>
+    <role id="buyer">
+      <permissions/>
+    </role>
+    <role id="engineer">
+      <permissions/>
+    </role>
+    <role id="test pilot">
+      <permissions/>
+    </role>
+  </roles>
+  <subjects>
+    <subject id="franz">
+      <relation unit="executive" role="engineer"/>
+    </subject>
+    <subject id="fritz">
+      <relation unit="executive" role="support agent"/>
+    </subject>
+    <subject id="fritzl">
+      <relation unit="executive" role="sales guy"/>
+    </subject>
+    <subject id="franzl">
+      <relation unit="executive" role="support agent"/>
+    </subject>
+    <subject id="franziskus">
+      <relation unit="executive" role="buyer"/>
+    </subject>
+        <subject id="mario">
+      <relation unit="executive" role="engineer"/>
+    </subject>
+        <subject id="luigi">
+      <relation unit="executive" role="test pilot"/>
+    </subject>
+  </subjects> 
+</organisation>

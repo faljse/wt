@@ -12,6 +12,47 @@ interface ManualTaskData {
   role: string;
   organisation: string;
   link: string;
+  timeout: number;
+}
+
+// header: {"cpee-base":"http://coruscant.wst.univie.ac.at:9298",
+// "cpee-instance":"http://coruscant.wst.univie.ac.at:9298/145",
+// "cpee-callback":"http://coruscant.wst.univie.ac.at:9298/145/callbacks/4e044959171bd005c81cc3f8e235a216",
+// "cpee-callback_id":"4e044959171bd005c81cc3f8e235a216",
+// "cpee-activity":"a1",
+// "cpee-label":"\"Customer sends Order\"",
+// "cpee-attr-uuid":"88633ba5-ffc2-44c4-83e6-d53b56500771",
+// "cpee-attr-info":"a00626177",
+// "cpee-attr-modeltype":"CPEE",
+// "cpee-attr-theme":"default",
+// "accept-encoding":"gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+// "accept":"*/*","user-agent":"Ruby",
+// "content-type":"application/x-www-form-urlencoded","content-length":"106","host":"faljse.info:9666"}
+class CpeeInfo {
+  'cpee-base': string
+  'cpee-instance': string
+  'cpee-callback': string
+  'cpee-callback_id': string
+  'cpee-activity': string
+  'cpee-label': string
+  'cpee-attr-uuid': string
+  'cpee-attr-info': string
+  'cpee-attr-modeltype': string
+  'cpee-attr-theme': string
+}
+
+class CallbackData {
+  headers=new  Map<string, CpeeInfo>();
+  data=new  Map<string, ManualTaskData>();
+}
+
+class TaskInfo {
+  label: string
+  callBackId: string
+}
+
+class WorkList {
+  tasks= new Map<string, TaskInfo[]>();
 }
 
 // Creates and configures an ExpressJS web server.
@@ -24,6 +65,9 @@ export class App {
   });
 
   private koa = new Koa();
+  private workList=new WorkList();
+  private ci = new CallbackData();
+
   //Run configuration methods on the Express instance.
   constructor(private port) {
     this.routes();
@@ -45,7 +89,17 @@ export class App {
       next();
     });
 
+
+    router.get('/worklist', async (ctx, next) => {
+      log.info(ctx.path);
+      ctx.type = 'application/json';      
+      ctx.body = JSON.stringify(this.workList.tasks.get('customer'));
+      next();
+    });
+
+
     //manual: customerSendsOrder
+    // 2017-12-28T21:26:31.599Z - info: [App] role: {"timeout":"2","role":"customer","organisation":"acme corp","link":"http://faljse.info:9666/customerSendsOrder"}
     router.get('/customerSendsOrder', async (ctx, next) => {
       log.info(ctx.path);
       await KoaSend(ctx, '/static/customerSendsOrder.html');
@@ -53,8 +107,25 @@ export class App {
     });
     router.post('/customerSendsOrder', KoaBody(), async (ctx, next) => {
       let data: ManualTaskData = ctx.request.body;
-      log.info("role: %s", data.role);
+      log.info("data: %s ", JSON.stringify(data));
+      log.info("header: %s ", JSON.stringify(ctx.request.header));
       ctx.type = 'application/json';
+      let a:CpeeInfo = ctx.request.header;
+      let id:string=a['cpee-callback_id'];
+      this.ci.headers.set(id, ctx.request.header)
+      this.ci.data.set(id, data)
+
+      let taskList=this.workList.tasks.get(data.role);
+      if(taskList===undefined) {
+        taskList=[];
+        this.workList.tasks.set(data.role, taskList);
+      }      
+        
+      let task=new TaskInfo();
+      task.callBackId=a['cpee-callback_id']
+      taskList.push(task);
+
+      ctx.set('CPEE-CALLBACK', 'true')
       ctx.body = JSON.stringify(ctx.body = {
         name: Faker.fake("{{name.lastName}}, {{name.firstName}} {{name.suffix}}")
       });
@@ -75,6 +146,42 @@ export class App {
       });
       next();
     });
+
+        //manual: testFlight
+        router.get('/testFlight', async (ctx, next) => {
+          await KoaSend(ctx, '/static/testFlight.html');
+          next();
+        });
+        router.post('/testFlight', KoaBody(), async (ctx, next) => {
+          ctx.type = 'application/json';
+          ctx.body= JSON.stringify({duration: Faker.random.number({min:100,max:3600})});
+          log.info("testFlight %s", ctx.body);    
+          next();
+        });
+    
+        //manual: evaluateFlight
+        router.get('/evaluateFlight', async (ctx, next) => {
+          await KoaSend(ctx, '/static/evaluateFlight.html');
+          next();
+        });
+        router.post('/evaluateFlight', KoaBody(), async (ctx, next) => {
+          ctx.type = 'application/json';
+          let result=JSON.stringify({survived: Faker.random.arrayElement(["true", "false"])});
+          log.info("evaluateflight: %s", result);
+          ctx.body = result;
+          next();
+        });
+    
+        //manual: repair
+        router.get('/repair', async (ctx, next) => {
+          await KoaSend(ctx, '/static/repair.html');
+          log.info("repair");      
+          next();
+        });
+        router.post('/repair', KoaBody(), async (ctx, next) => {
+          ctx.body = JSON.stringify({repaired: Faker.random.arrayElement(["body", "avionics", "radio", "engine"])});
+          next();
+        });
 
     //auto: buildBaseModel
     router.get('/buildBaseModel', async (ctx, next) => {
@@ -235,41 +342,7 @@ export class App {
       next();
     });
 
-    //manual: testFlight
-    router.get('/testFlight', async (ctx, next) => {
-      await KoaSend(ctx, '/static/testFlight.html');
-      next();
-    });
-    router.post('/testFlight', KoaBody(), async (ctx, next) => {
-      ctx.type = 'application/json';
-      ctx.body= JSON.stringify({duration: Faker.random.number({min:100,max:3600})});
-      log.info("testFlight %s", ctx.body);    
-      next();
-    });
 
-    //manual: evaluateFlight
-    router.get('/evaluateFlight', async (ctx, next) => {
-      await KoaSend(ctx, '/static/evaluateFlight.html');
-      next();
-    });
-    router.post('/evaluateFlight', KoaBody(), async (ctx, next) => {
-      ctx.type = 'application/json';
-      let result=JSON.stringify({survived: Faker.random.arrayElement(["true", "false"])});
-      log.info("evaluateflight: %s", result);
-      ctx.body = result;
-      next();
-    });
-
-    //manual: repair
-    router.get('/repair', async (ctx, next) => {
-      await KoaSend(ctx, '/static/repair.html');
-      log.info("repair");      
-      next();
-    });
-    router.post('/repair', KoaBody(), async (ctx, next) => {
-      ctx.body = JSON.stringify({repaired: Faker.random.arrayElement(["body", "avionics", "radio", "engine"])});
-      next();
-    });
 
     //auto: deliverPlane
     router.get('/deliverPlane', async (ctx, next) => {

@@ -8,23 +8,23 @@
   <handlerwrapper>DefaultHandlerWrapper</handlerwrapper>
   <endpoints>
     <timeout xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://gruppe.wst.univie.ac.at/~mangler/services/timeout.php</timeout>
-    <customerSendsOrder xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/customerSendsOrder</customerSendsOrder>
-    <customerSendsSpecification xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/customerSendsSpecification</customerSendsSpecification>
-    <buildBaseModel xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/buildBaseModel</buildBaseModel>
-    <orderSeats xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/orderSeats</orderSeats>
-    <orderToilet xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/orderToilet</orderToilet>
-    <orderVodkaBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/orderVodkaBar</orderVodkaBar>
-    <orderWhiskeyBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/orderWhiskeyBar</orderWhiskeyBar>
-    <orderTequillaBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/orderTequillaBar</orderTequillaBar>
-    <orderBeerBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/orderBeerBar</orderBeerBar>
-    <orderSakeBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/orderSakeBar</orderSakeBar>
-    <waitForParts xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/waitForParts</waitForParts>
-    <assemblePlane xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/assemblePlane</assemblePlane>
-    <testFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/testFlight</testFlight>
-    <evaluateFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/evaluateFlight</evaluateFlight>
-    <repair xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/repair</repair>
-    <deliverPlane xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/deliverPlane</deliverPlane>
-    <receiveConfirmation xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://abgabe.cs.univie.ac.at:9666/receiveConfirmation</receiveConfirmation>
+    <customerSendsOrder xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/customerSendsOrder</customerSendsOrder>
+    <customerSendsSpecification xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/customerSendsSpecification</customerSendsSpecification>
+    <buildBaseModel xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/buildBaseModel</buildBaseModel>
+    <orderSeats xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderSeats</orderSeats>
+    <orderToilet xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderToilet</orderToilet>
+    <orderVodkaBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderVodkaBar</orderVodkaBar>
+    <orderWhiskeyBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderWhiskeyBar</orderWhiskeyBar>
+    <orderTequillaBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderTequillaBar</orderTequillaBar>
+    <orderBeerBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderBeerBar</orderBeerBar>
+    <orderSakeBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderSakeBar</orderSakeBar>
+    <waitForParts xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/waitForParts</waitForParts>
+    <assemblePlane xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/assemblePlane</assemblePlane>
+    <testFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/testFlight</testFlight>
+    <evaluateFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/evaluateFlight</evaluateFlight>
+    <repair xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/repair</repair>
+    <deliverPlane xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/deliverPlane</deliverPlane>
+    <receiveConfirmation xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/receiveConfirmation</receiveConfirmation>
   </endpoints>
   <positions/>
   <description>
@@ -37,7 +37,7 @@
             <timeout>2</timeout>
             <role>"customer"</role>
             <organisation>"acme corp"</organisation>
-            <link>"http://abgabe.cs.univie.ac.at:9666/customerSendsOrder"</link>
+            <link>"http://faljse.info:9666/customerSendsOrder"</link>
           </arguments>
         </parameters>
         <finalize output="result">data.customerName = result['name']</finalize>
@@ -52,7 +52,7 @@
               <arguments>
                 <role>"customer"</role>
                 <organisation>"acme corp"</organisation>
-                <link>"http://abgabe.cs.univie.ac.at:9666/customerSendsSpecification"</link>
+                <link>"http://faljse.info:9666/customerSendsSpecification"</link>
               </arguments>
             </parameters>
             <finalize output="result">data.barType =  result['barType']</finalize>
@@ -209,7 +209,7 @@
               <timeout>2</timeout>
               <role>"customer"</role>
               <organisation>"acme corp"</organisation>
-              <link>"http://abgabe.cs.univie.ac.at:9666/evaluateFlight"</link>
+              <link>"http://faljse.info:9666/evaluateFlight"</link>
             </arguments>
           </parameters>
           <finalize output="result">data.hasSurvived = result['survived']</finalize>
@@ -225,7 +225,7 @@
                   <timeout>2</timeout>
                   <role>"customer"</role>
                   <organisation>"acme corp"</organisation>
-                  <link>"http://abgabe.cs.univie.ac.at:9666/repair"</link>
+                  <link>"http://faljse.info:9666/repair"</link>
                 </arguments>
               </parameters>
               <finalize output="result">data.repairCount += 1</finalize>
@@ -253,7 +253,7 @@
             <timeout>2</timeout>
             <role>"customer"</role>
             <organisation>"acme corp"</organisation>
-            <link>"http://abgabe.cs.univie.ac.at:9666/receiveConfirmation"</link>
+            <link>"http://faljse.info:9666/receiveConfirmation"</link>
           </arguments>
         </parameters>
       </call>
