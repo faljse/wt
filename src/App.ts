@@ -4,8 +4,10 @@ import * as KoaRouter from 'koa-router';
 import * as KoaSend from 'koa-send';
 import * as Faker from 'faker';
 import * as Nodemailer from 'nodemailer';
+import * as fs from 'fs';
 
 import { MyLogger } from "./mylogger";
+import * as Request from 'request';
 const log = MyLogger.create("App");
 
 interface ManualTaskData {
@@ -67,6 +69,7 @@ export class App {
   private koa = new Koa();
   private workList=new WorkList();
   private ci = new CallbackData();
+  private template;
 
   //Run configuration methods on the Express instance.
   constructor(private port) {
@@ -77,6 +80,7 @@ export class App {
 
   public async init() {
     log.info("init");
+    this.template = fs.readFileSync('a00626177.xml', 'utf8');
     this.koa.listen(this.port);
   }
 
@@ -89,7 +93,6 @@ export class App {
       next();
     });
 
-
     router.get('/worklist', async (ctx, next) => {
       log.info(ctx.path);
       ctx.type = 'application/json';      
@@ -97,6 +100,28 @@ export class App {
       next();
     });
 
+    router.get('/start', async (ctx, next) => {
+      var formData = {
+        xml: {
+          value: this.template,
+          options: {
+            filename: 'filename.xml',
+            contentType: 'text/xml'
+          }
+        }
+      };
+      Request.post({ url: 'http://cpee.org', formData: formData }, function optionalCallback(err, httpResponse, body) {
+        if (err) {
+          console.log('upload failed:' + err);
+          ctx.body='upload failed:' + err;
+        }
+        else {
+          console.log('Upload successful!  Server responded with:' + body);
+          ctx.body='Upload successful!  Server responded with:' + body
+        }
+        next()
+      });
+    });
 
     //manual: customerSendsOrder
     // 2017-12-28T21:26:31.599Z - info: [App] role: {"timeout":"2","role":"customer","organisation":"acme corp","link":"http://faljse.info:9666/customerSendsOrder"}

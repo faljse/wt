@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GoYouCam</title>
+    <link rel='stylesheet' href='/static/stylesheets/bulma.css'/>
+    <script src="/static/js/vue.js"></script>
+</head>
+<style>
+    html, body, #app {
+        height: 100%;
+    }
+
+    #app {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .main-content {
+        flex: 1;
+    }
+
+    .footer {
+        margin-top: -12px;
+    }
+
+    .section {
+        padding: 1em;
+    }
+
+    @media screen and (max-width: 768px) {
+        #menu-toggle:checked + .nav-menu {
+            display: block;
+        }
+    }
+</style>
+
+<body>
+<div id="app">
+    <section class="main-content columns is-fullheight">
+        <aside class="column is-2 is-narrow-mobile is-fullheight section is-hidden-mobile">
+            <ul class="menu-list">
+                <li>
+                    <a href="#" class="">
+                        <span class="icon"><i class="fa fa-home"></i></span> Home
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="is-active">
+                        <span class="icon"><i class="fa fa-table"></i></span> Cams
+                    </a>
+
+                    <ul>
+                        <div :key="command.description" v-for="command in commands" class="api list-complete-item">
+                            <li>
+                                <a href="#">
+                                    <span class="icon is-small"><i
+                                            class="fa fa-link"></i></span> {{ command.description }}
+                                </a>
+                            </li>
+                        </div>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="">
+                        <span class="icon"><i class="fa fa-info"></i></span> About
+                    </a>
+                </li>
+            </ul>
+        </aside>
+        <div class="container column is-10">
+            <div class="section">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th><abbr title="Position">Pos</abbr></th>
+                        <th>User</th>
+                        <th><abbr title="task">Pld</abbr></th>
+                        <th><abbr title="id">W</abbr></th>
+                        <th><abbr title="status">D</abbr></th>
+                      </tr>
+                    </thead>
+                    <tfoot>
+                      <tr>
+                        <th><abbr title="Position">Pos</abbr></th>
+                        <th>User</th>
+                        <th><abbr title="task">Pld</abbr></th>
+                        <th><abbr title="id">W</abbr></th>
+                        <th><abbr title="status">D</abbr></th>
+                      </tr>
+                    </tfoot>
+                    <tbody>
+                      <tr>
+                        <th>1</th>
+                        <td><a href="https://en.wikipedia.org/wiki/Leicester_City_F.C." title="Leicester City F.C.">Leicester City</a> <strong>(C)</strong>
+                        </td>
+                        <td>38</td>
+                        <td>23</td>
+                        <td>12</td>
+                       </tr>
+                      </tbody>
+                      </table>                 
+            </div>
+        </div>
+    </section>
+    <footer class="footer is-hidden">
+        <div class="container">
+            <div class="content has-text-centered">
+                <p>Hello</p>
+            </div>
+        </div>
+    </footer>
+</div>
+</body>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            commands: [],
+            userName:'customer'
+        },
+        created: function () {
+            this.fetchWorklist();
+        },
+        methods: {
+            fetchWorklist: function() {
+                var self = this;
+                fetch('/worklist', {
+                    method: 'get'
+                }).then(function (response) {
+                    return response.json();
+                }).then(function (json) {
+                    self.commands = json;
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            }
+        }
+    });
+
+
+</script>
+
+</html>

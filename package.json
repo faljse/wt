@@ -19,13 +19,16 @@
     "@types/koa-send": "^3.3.1",
     "@types/node": "^8.0.13",
     "@types/nodemailer": "^4.3.1",
+    "@types/request": "^2.0.9",
     "@types/winston": "^2.3.7",
     "faker": "^4.1.0",
+    "fs": "0.0.1-security",
     "koa": "^2.3.0",
     "koa-body": "^2.5.0",
     "koa-router": "^7.2.1",
     "koa-send": "^4.1.1",
     "nodemailer": "^4.4.0",
+    "request": "^2.83.0",
     "winston": "^2.4.0"
   }
 }
