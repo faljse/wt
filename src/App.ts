@@ -51,6 +51,10 @@ class CallbackData {
 class TaskInfo {
   label: string
   callBackId: string
+  callBack: string
+  link: string
+  role: string
+  timeout: number
 }
 
 class WorkList {
@@ -148,6 +152,12 @@ export class App {
         
       let task=new TaskInfo();
       task.callBackId=a['cpee-callback_id']
+      task.callBack=a['cpee-callback']
+      task.label=a['cpee-label']
+      task.link=data.link
+      task.role=data.role
+      task.timeout=data.timeout
+
       taskList.push(task);
 
       ctx.set('CPEE-CALLBACK', 'true')

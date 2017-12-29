@@ -8,8 +8,8 @@
   <handlerwrapper>DefaultHandlerWrapper</handlerwrapper>
   <endpoints>
     <timeout xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://gruppe.wst.univie.ac.at/~mangler/services/timeout.php</timeout>
-    <customerSendsOrder xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/customerSendsOrder</customerSendsOrder>
-    <customerSendsSpecification xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/customerSendsSpecification</customerSendsSpecification>
+    <customerSendsOrder xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/static/worklist.html#/customerSendsOrder</customerSendsOrder>
+    <customerSendsSpecification xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/static/worklist.html#/customerSendsSpecification</customerSendsSpecification>
     <buildBaseModel xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/buildBaseModel</buildBaseModel>
     <orderSeats xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderSeats</orderSeats>
     <orderToilet xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderToilet</orderToilet>
@@ -20,9 +20,9 @@
     <orderSakeBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderSakeBar</orderSakeBar>
     <waitForParts xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/waitForParts</waitForParts>
     <assemblePlane xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/assemblePlane</assemblePlane>
-    <testFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/testFlight</testFlight>
-    <evaluateFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/evaluateFlight</evaluateFlight>
-    <repair xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/repair</repair>
+    <testFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/static/worklist.html#/testFlight</testFlight>
+    <evaluateFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/static/worklist.html#/evaluateFlight</evaluateFlight>
+    <repair xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/static/worklist.html#/repair</repair>
     <deliverPlane xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/deliverPlane</deliverPlane>
     <receiveConfirmation xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/receiveConfirmation</receiveConfirmation>
   </endpoints>
@@ -37,7 +37,7 @@
             <timeout>2</timeout>
             <role>"customer"</role>
             <organisation>"acme corp"</organisation>
-            <link>"http://faljse.info:9666/customerSendsOrder"</link>
+            <link>"http://faljse.info:9666/static/worklist.html#/customerSendsOrder"</link>
           </arguments>
         </parameters>
         <finalize output="result">data.customerName = result['name']</finalize>
@@ -52,7 +52,7 @@
               <arguments>
                 <role>"customer"</role>
                 <organisation>"acme corp"</organisation>
-                <link>"http://faljse.info:9666/customerSendsSpecification"</link>
+                <link>"hhttp://faljse.info:9666/static/worklist.html#/customerSendsSpecification"</link>
               </arguments>
             </parameters>
             <finalize output="result">data.barType =  result['barType']</finalize>
@@ -195,9 +195,12 @@
           <parameters>
             <label>"Test flight"</label>
             <method>:post</method>
+            
             <arguments>
-			<from>"martin.kunz@univie.ac.at"</from>
-			<notify>"martin.michael.kunz@gmail.com"</notify>
+              <timeout>2</timeout>
+              <role>"customer"</role>
+              <organisation>"acme corp"</organisation>
+              <link>"http://faljse.info:9666/static/worklist.html#/testFlight"</link>
             </arguments>
           </parameters>
         </call>
@@ -209,7 +212,7 @@
               <timeout>2</timeout>
               <role>"customer"</role>
               <organisation>"acme corp"</organisation>
-              <link>"http://faljse.info:9666/evaluateFlight"</link>
+              <link>"http://faljse.info:9666/static/worklist.html#/evaluateFlight"</link>
             </arguments>
           </parameters>
           <finalize output="result">data.hasSurvived = result['survived']</finalize>
@@ -225,7 +228,7 @@
                   <timeout>2</timeout>
                   <role>"customer"</role>
                   <organisation>"acme corp"</organisation>
-                  <link>"http://faljse.info:9666/repair"</link>
+                  <link>"http://faljse.info:9666/static/worklist.html#/repair"</link>
                 </arguments>
               </parameters>
               <finalize output="result">data.repairCount += 1</finalize>

@@ -1,40 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>GoYouCam</title>
+    <title>Worklist</title>
     <link rel='stylesheet' href='/static/stylesheets/bulma.css'/>
-    <script src="/static/js/vue.js"></script>
+    <link rel='stylesheet' href='worklist.css'/>
+    <script src='/static/js/vue.js'></script>
+    <script src='/static/js/vue-router.js'></script>
+
 </head>
-<style>
-    html, body, #app {
-        height: 100%;
-    }
-
-    #app {
-        min-height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .main-content {
-        flex: 1;
-    }
-
-    .footer {
-        margin-top: -12px;
-    }
-
-    .section {
-        padding: 1em;
-    }
-
-    @media screen and (max-width: 768px) {
-        #menu-toggle:checked + .nav-menu {
-            display: block;
-        }
-    }
-</style>
-
 <body>
 <div id="app">
     <section class="main-content columns is-fullheight">
@@ -49,16 +22,15 @@
                     <a href="#" class="is-active">
                         <span class="icon"><i class="fa fa-table"></i></span> Cams
                     </a>
-
                     <ul>
-                        <div :key="command.description" v-for="command in commands" class="api list-complete-item">
+                        <!-- <div :key="item.description" v-for="item in commands" class="api list-complete-item">
                             <li>
                                 <a href="#">
                                     <span class="icon is-small"><i
-                                            class="fa fa-link"></i></span> {{ command.description }}
+                                            class="fa fa-link"></i></span> {{ item.description }}
                                 </a>
                             </li>
-                        </div>
+                        </div> -->
                     </ul>
                 </li>
                 <li>
@@ -90,16 +62,15 @@
                       </tr>
                     </tfoot>
                     <tbody>
-                      <tr>
-                        <th>1</th>
-                        <td><a href="https://en.wikipedia.org/wiki/Leicester_City_F.C." title="Leicester City F.C.">Leicester City</a> <strong>(C)</strong>
-                        </td>
-                        <td>38</td>
-                        <td>23</td>
-                        <td>12</td>
-                       </tr>
-                      </tbody>
-                      </table>                 
+                        <tr  v-for="(item, index) in worklist" class="api list-complete-item">
+                            <th> {{ index }} </th>
+                            <td><a :href=item.link :title=item.link>{{ item.link }}</a></td>
+                            <td><router-link :to="{path: item.link}">{{ item.label }}</router-link>
+                            <td>{{ item.role }}</td>
+                            <td>{{ item.callBackId }}</td>
+                        </tr>
+                    </tbody>
+                </table>                 
             </div>
         </div>
     </section>
@@ -110,35 +81,244 @@
             </div>
         </div>
     </footer>
+    <router-view></router-view>
 </div>
+
 </body>
 <script>
+    // register modal component
+    Vue.component('modal', {
+        template: `
+        <transition name="modal">
+      <div class="modal-mask">
+        <div class="modal-wrapper">
+          <div class="modal-container">
+            <div class="modal-header">
+              <slot name="header">
+                default header
+              </slot>
+            </div>
+            <div class="modal-body">
+              <slot name="body">
+                default body
+              </slot>
+            </div>
+            <div class="modal-footer">
+              <slot name="footer">
+                default footer
+                <button class="modal-default-button" @click="$emit('close')">
+                  OK
+                </button>
+              </slot>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>`
+    })
+    let repair = Vue.component('repair', {
+        template: `<modal @close="showModal = false"><h3 slot="header">Order your plane!</h3>
+        <div slot="body" class="field">
+                <div class="control">
+                    <button class="button is-text">Repair Body</button>
+                    <button class="button is-text">Repair Engine</button>
+                    <button class="button is-text">Repair Avionics</button>
+                    <button class="button is-text">Repair Radio</button>
+                </div>
+            </div></modal>`,
+        methods: {
+            repairIt() {
+                console.log("repairIt")
+            }
+        }
+    });
+    let customerSendsOrder = Vue.component('customerSendsOrder', {
+        template: `<modal @close="showModal = false"><h3 slot="header">Order your plane!</h3>
+            <div slot="body" class="container">
+            <div class="field">
+                <div class="control">
+                    <input class="input" type="text" placeholder="Your Name">
+                </div>
+            </div>           
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox"> I agree to the
+                        <a href="#">terms and conditions</a>
+                    </label>
+                </div>
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <button class="button is-text" @click="orderIt">Order</button>
+                </div>
+                <div class="control">
+                    <button class="button is-link">Cancel</button>
+                </div>
+            </div>
+        </div></modal>`,
+        methods: {
+            orderIt() {
+                console.log("orderIt")
+            }
+        }
+    });
+    let customerSendsSpecification = Vue.component('customerSendsSpecification', {
+        template: `<modal @close="showModal = false"><h3 slot="header">Order your plane!</h3>
+            <div slot="body" class="container">
+            <div class="field">
+                <div class="control">
+                    <label class="radio">
+                        <input type="radio" name="question" value="VodkaBar">VodkaBar
+                    </label>
+                    <label class="radio">
+                            <input type="radio" name="question" value="WhiskeyBar">WhiskeyBar
+                    </label>
+                    <label class="radio">
+                            <input type="radio" name="question" value="BeerBar">BeerBar
+                    </label>
+                    <label class="radio">
+                            <input type="radio" name="question" value="SakeBar">SakeBar
+                    </label>
+                    <label class="radio">
+                            <input type="radio" name="question" value="TequillaBar">TequillaBar
+                    </label>
+                </div>
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <button class="button is-text">Send</button>
+                </div>
+                <div class="control">
+                    <button class="button is-link">Cancel</button>
+                </div>
+            </div>
+        </div></modal>`,
+        methods: {
+            sendIt() {
+                console.log("sendIt")
+            }
+        }
+    });
+    let testFlight = Vue.component('testflight', {
+        template: `<modal @close="showModal = false"><h3 slot="header">Order your plane!</h3>
+            <div  slot="body" class="container">
+                <div class="field">
+                    <div class="control">
+                        <button class="button is-text">Checklist</button>
+                        <button class="button is-text">Taxi</button>
+                        <button class="button is-text">Start</button>
+                        <button class="button is-text">Land</button>
+                    </div>
+                </div>
+                <div class="field is-grouped">
+                    <div class="control">
+                        <button class="button is-text">Done</button>
+                    </div>
+                    <div class="control">
+                        <button class="button is-link">Cancel</button>
+                    </div>
+                </div>
+            </div></modal>`,
+        methods: {
+            testFlightIt() {
+                console.log("testFlightIt")
+            }
+        }
+    });
+    let evaluateFlight = Vue.component('evaluateFlight', {
+        template:`<modal @close="showModal = false"><h3 slot="header">Order your plane!</h3>
+            <div  slot="body" class="container">
+            <div class="field">
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox">I survived
+                    </label>
+                </div>
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <button class="button is-text">Send</button>
+                </div>
+                <div class="control">
+                    <button class="button is-link">Cancel</button>
+                </div>
+            </div>
+        </div></modal>`,
+        methods: {
+            testFlightIt() {
+                console.log("evaluateFlight")
+            }
+        }
+    });
+
+    const routes = [
+    { path: '/customerSendsOrder', component: customerSendsOrder },
+    { path: '/customerSendsSpecification', component: customerSendsSpecification },
+    { path: '/testFlight', component: testFlight },
+    { path: '/evaluateFlight', component: evaluateFlight },
+    { path: '/repair', component: repair }
+    ]
+
+    const router = new VueRouter({routes});
+
+    
     var app = new Vue({
         el: '#app',
-        data: {
-            commands: [],
-            userName:'customer'
+        router: router,
+        data: function () {
+            return {
+                worklist: [],
+                userName:'customer',
+                showModal: ''
+            }
         },
         created: function () {
             this.fetchWorklist();
         },
         methods: {
-            fetchWorklist: function() {
+            fetchWorklist: function () {
                 var self = this;
                 fetch('/worklist', {
                     method: 'get'
                 }).then(function (response) {
                     return response.json();
                 }).then(function (json) {
-                    self.commands = json;
+                    self.worklist = json;
                 }).catch(function (err) {
                     console.log(err);
                 });
+            },
+            dialogCustomerSendsOrder: function () {
+                console.log("dialogCustomerSendsOrder")
+                this.showModal='customerSendsOrder'
+            },
+            dialogCustomerSendsSpecification: function () {
+                console.log("dialogCustomerSendsSpecification")
+                this.showModal='customerSendsSpecification'
+            },
+            dialogRepair: function () {
+                console.log("dialogRepair")
+                this.showModal='dialogRepair'
+            },
+            dialogTestFlight: function () {
+                console.log("dialogTestFlight")
+                this.showModal='dialogTestFlight'
             }
         }
     });
 
-
+    function putCPEE (json, uri, callback) {
+        request({method: 'PUT', uri: uri, json: json}, 
+            function (error, response, body) {
+                if (response.statusCode == 201) {
+                    console.log('201' + response)
+                } else {
+                    console.log('error: ' + response.statusCode)
+                    console.log(body)
+                }
+                callback(body, error)
+            }
+        )
+    }
 </script>
-
-</html>
