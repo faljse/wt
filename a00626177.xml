@@ -8,8 +8,8 @@
   <handlerwrapper>DefaultHandlerWrapper</handlerwrapper>
   <endpoints>
     <timeout xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://gruppe.wst.univie.ac.at/~mangler/services/timeout.php</timeout>
-    <customerSendsOrder xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/static/worklist.html#/customerSendsOrder</customerSendsOrder>
-    <customerSendsSpecification xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/static/worklist.html#/customerSendsSpecification</customerSendsSpecification>
+    <customerSendsOrder xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/receive</customerSendsOrder>
+    <customerSendsSpecification xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/receive</customerSendsSpecification>
     <buildBaseModel xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/buildBaseModel</buildBaseModel>
     <orderSeats xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderSeats</orderSeats>
     <orderToilet xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderToilet</orderToilet>
@@ -20,9 +20,9 @@
     <orderSakeBar xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/orderSakeBar</orderSakeBar>
     <waitForParts xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/waitForParts</waitForParts>
     <assemblePlane xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/assemblePlane</assemblePlane>
-    <testFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/static/worklist.html#/testFlight</testFlight>
-    <evaluateFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/static/worklist.html#/evaluateFlight</evaluateFlight>
-    <repair xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/static/worklist.html#/repair</repair>
+    <testFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/receive</testFlight>
+    <evaluateFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/receive</evaluateFlight>
+    <repair xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/static/receive</repair>
     <deliverPlane xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/deliverPlane</deliverPlane>
     <receiveConfirmation xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/receiveConfirmation</receiveConfirmation>
   </endpoints>
@@ -31,7 +31,7 @@
     <description xmlns="http://cpee.org/ns/description/1.0">
       <call id="a1" endpoint="customerSendsOrder">
         <parameters>
-          <label>"Customer sends Order"</label>
+          <label>customerSendsOrder</label>
           <method>:post</method>
           <arguments>
             <timeout>2</timeout>
@@ -47,12 +47,12 @@
         <parallel_branch pass="" local="">
           <call id="a2" endpoint="customerSendsSpecification">
             <parameters>
-              <label>"Customer sends specification"</label>
+              <label>customerSendsSpecification</label>
               <method>:post</method>
               <arguments>
                 <role>"customer"</role>
                 <organisation>"acme corp"</organisation>
-                <link>"hhttp://faljse.info:9666/static/worklist.html#/customerSendsSpecification"</link>
+                <link>"http://faljse.info:9666/static/worklist.html#/customerSendsSpecification"</link>
               </arguments>
             </parameters>
             <finalize output="result">data.barType =  result['barType']</finalize>
@@ -193,7 +193,7 @@
       <loop mode="post_test" condition="">
         <call id="a16" endpoint="testFlight">
           <parameters>
-            <label>"Test flight"</label>
+            <label>testFlight</label>
             <method>:post</method>
             
             <arguments>
@@ -206,7 +206,7 @@
         </call>
         <call id="a17" endpoint="evaluateFlight">
           <parameters>
-            <label>"Evaluate Flight"</label>
+            <label>evaluateFlight</label>
             <method>:post</method>
             <arguments>
               <timeout>2</timeout>
@@ -222,7 +222,7 @@
           <alternative condition="data.hasSurvived == true">
             <call id="a18" endpoint="repair">
               <parameters>
-                <label>"repair"</label>
+                <label>repair</label>
                 <method>:post</method>
                 <arguments>
                   <timeout>2</timeout>

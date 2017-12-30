@@ -5,6 +5,7 @@ import * as KoaSend from 'koa-send';
 import * as Faker from 'faker';
 import * as Nodemailer from 'nodemailer';
 import * as fs from 'fs';
+import * as xml2js from 'xml2js'
 
 import { MyLogger } from "./mylogger";
 import * as Request from 'request';
@@ -55,6 +56,8 @@ class TaskInfo {
   link: string
   role: string
   timeout: number
+  assignedTo: string
+  assignedTimeout: number
 }
 
 class WorkList {
@@ -74,6 +77,7 @@ export class App {
   private workList=new WorkList();
   private ci = new CallbackData();
   private template;
+  private organisation;
 
   //Run configuration methods on the Express instance.
   constructor(private port) {
@@ -84,6 +88,11 @@ export class App {
 
   public async init() {
     log.info("init");
+    let orgxml = fs.readFileSync('organisation.xml', 'utf8');
+    xml2js.parseString(orgxml, (err, result) => {
+      this.organisation=result.organisation;
+    });
+
     this.template = fs.readFileSync('a00626177.xml', 'utf8');
     this.koa.listen(this.port);
   }
@@ -97,10 +106,41 @@ export class App {
       next();
     });
 
-    router.get('/worklist', async (ctx, next) => {
+    router.get('/worklist/:user?', async (ctx, next) => {
       log.info(ctx.path);
       ctx.type = 'application/json';      
-      ctx.body = JSON.stringify(this.workList.tasks.get('customer'));
+
+
+      let user = ctx.params['user'];
+      let subjects=this.organisation.subjects[0];
+      let role="";
+      for(let subject of subjects.subject) {
+        let name = subject.$['id'];
+        if(name===user) {
+          role = subject.relation[0].$['role'];
+          let unit = subject.relation[0].$['unit'];
+        }
+      }
+      if(role === undefined) {
+        let allTasks = [];
+        for (let pair of this.workList.tasks) {
+          allTasks.push(...pair[1]);
+        }
+        ctx.body = JSON.stringify(allTasks);
+      }
+      else {
+        let list=this.workList.tasks.get(role);
+        if(list===undefined) {
+          list=[];
+        }
+        ctx.body = JSON.stringify(list);
+      }
+      next();
+    });
+
+    router.get('/organisation', async (ctx, next) => {
+      log.info(ctx.path);
+      ctx.body = JSON.stringify(this.organisation);
       next();
     });
 
@@ -129,12 +169,7 @@ export class App {
 
     //manual: customerSendsOrder
     // 2017-12-28T21:26:31.599Z - info: [App] role: {"timeout":"2","role":"customer","organisation":"acme corp","link":"http://faljse.info:9666/customerSendsOrder"}
-    router.get('/customerSendsOrder', async (ctx, next) => {
-      log.info(ctx.path);
-      await KoaSend(ctx, '/static/customerSendsOrder.html');
-      next();
-    });
-    router.post('/customerSendsOrder', KoaBody(), async (ctx, next) => {
+    router.post('/receive', KoaBody(), async (ctx, next) => {
       let data: ManualTaskData = ctx.request.body;
       log.info("data: %s ", JSON.stringify(data));
       log.info("header: %s ", JSON.stringify(ctx.request.header));
@@ -157,66 +192,13 @@ export class App {
       task.link=data.link
       task.role=data.role
       task.timeout=data.timeout
-
       taskList.push(task);
-
       ctx.set('CPEE-CALLBACK', 'true')
       ctx.body = JSON.stringify(ctx.body = {
         name: Faker.fake("{{name.lastName}}, {{name.firstName}} {{name.suffix}}")
       });
       next();
     });
-
-    //manual: customerSendsSpecification
-    router.get('/customerSendsSpecification', async (ctx, next) => {
-      await KoaSend(ctx, '/static/customerSendsSpecification.html');
-      next();
-    });
-    router.post('/customerSendsSpecification', KoaBody(), async (ctx, next) => {
-      log.info("customerSendsSpecification");
-      let data: ManualTaskData = ctx.request.body;
-      ctx.type = 'application/json';      
-      ctx.body = JSON.stringify({
-        barType: Faker.random.arrayElement(["VodkaBar", "WhiskeyBar", "BeerBar", "SakeBar", "TequillaBar"])
-      });
-      next();
-    });
-
-        //manual: testFlight
-        router.get('/testFlight', async (ctx, next) => {
-          await KoaSend(ctx, '/static/testFlight.html');
-          next();
-        });
-        router.post('/testFlight', KoaBody(), async (ctx, next) => {
-          ctx.type = 'application/json';
-          ctx.body= JSON.stringify({duration: Faker.random.number({min:100,max:3600})});
-          log.info("testFlight %s", ctx.body);    
-          next();
-        });
-    
-        //manual: evaluateFlight
-        router.get('/evaluateFlight', async (ctx, next) => {
-          await KoaSend(ctx, '/static/evaluateFlight.html');
-          next();
-        });
-        router.post('/evaluateFlight', KoaBody(), async (ctx, next) => {
-          ctx.type = 'application/json';
-          let result=JSON.stringify({survived: Faker.random.arrayElement(["true", "false"])});
-          log.info("evaluateflight: %s", result);
-          ctx.body = result;
-          next();
-        });
-    
-        //manual: repair
-        router.get('/repair', async (ctx, next) => {
-          await KoaSend(ctx, '/static/repair.html');
-          log.info("repair");      
-          next();
-        });
-        router.post('/repair', KoaBody(), async (ctx, next) => {
-          ctx.body = JSON.stringify({repaired: Faker.random.arrayElement(["body", "avionics", "radio", "engine"])});
-          next();
-        });
 
     //auto: buildBaseModel
     router.get('/buildBaseModel', async (ctx, next) => {
@@ -443,8 +425,5 @@ export class App {
       log.info(`Listening on ${bind}`);
     }
   }
-
   sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-  
-
 }

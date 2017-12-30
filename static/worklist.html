@@ -20,17 +20,14 @@
                 </li>
                 <li>
                     <a href="#" class="is-active">
-                        <span class="icon"><i class="fa fa-table"></i></span> Cams
+                        <span class="icon"><i class="fa fa-table"></i></span> Users
                     </a>
                     <ul>
-                        <!-- <div :key="item.description" v-for="item in commands" class="api list-complete-item">
-                            <li>
-                                <a href="#">
-                                    <span class="icon is-small"><i
-                                            class="fa fa-link"></i></span> {{ item.description }}
-                                </a>
+                        <div v-if="organisation !== null" class="api list-complete-item">
+                            <li    v-for="subject in organisation.subjects[0].subject">
+                                            <router-link :to="{ name: 'main', params: { userName: subject.$['id'] }}">{{ subject.$['id'] }}</router-link>     
                             </li>
-                        </div> -->
+                        </div>
                     </ul>
                 </li>
                 <li>
@@ -52,19 +49,10 @@
                         <th><abbr title="status">D</abbr></th>
                       </tr>
                     </thead>
-                    <tfoot>
-                      <tr>
-                        <th><abbr title="Position">Pos</abbr></th>
-                        <th>User</th>
-                        <th><abbr title="task">Pld</abbr></th>
-                        <th><abbr title="id">W</abbr></th>
-                        <th><abbr title="status">D</abbr></th>
-                      </tr>
-                    </tfoot>
                     <tbody>
                         <tr  v-for="(item, index) in worklist" class="api list-complete-item">
                             <th> {{ index }} </th>
-                            <td><a :href=item.link :title=item.link>{{ item.link }}</a></td>
+                            <td><router-link :to="{ name: item.label, params: { userName: $route.params.userName, id: item.callBackId }}">{{ item.label }}</router-link></td>
                             <td><router-link :to="{path: item.link}">{{ item.label }}</router-link>
                             <td>{{ item.role }}</td>
                             <td>{{ item.callBackId }}</td>
@@ -103,22 +91,15 @@
                 default body
               </slot>
             </div>
-            <div class="modal-footer">
-              <slot name="footer">
-                default footer
-                <button class="modal-default-button" @click="$emit('close')">
-                  OK
-                </button>
-              </slot>
-            </div>
           </div>
         </div>
       </div>
     </transition>`
     })
     let repair = Vue.component('repair', {
-        template: `<modal @close="showModal = false"><h3 slot="header">Order your plane!</h3>
-        <div slot="body" class="field">
+        template: `<modal @close="$emit('close')">
+            <h3 slot="header">Order your plane!</h3>
+                <div slot="body" class="field">
                 <div class="control">
                     <button class="button is-text">Repair Body</button>
                     <button class="button is-text">Repair Engine</button>
@@ -133,11 +114,12 @@
         }
     });
     let customerSendsOrder = Vue.component('customerSendsOrder', {
-        template: `<modal @close="showModal = false"><h3 slot="header">Order your plane!</h3>
+        template: `<modal @close="$emit('close')">
+                <h3 slot="header">Order your plane!</h3>
             <div slot="body" class="container">
             <div class="field">
                 <div class="control">
-                    <input class="input" type="text" placeholder="Your Name">
+                    <input class="input" type="text" placeholder="Your Name" v-model="name">
                 </div>
             </div>           
             <div class="field">
@@ -153,55 +135,92 @@
                     <button class="button is-text" @click="orderIt">Order</button>
                 </div>
                 <div class="control">
-                    <button class="button is-link">Cancel</button>
+                    <button class="button is-link" @click="giveBack">Cancel</button>
                 </div>
             </div>
         </div></modal>`,
+        data: function () {
+            return {
+                name:''
+            }
+        },
         methods: {
-            orderIt() {
+            orderIt()  {
+                let self=this;
+                for(item of this.$parent.worklist) {
+                    if(item.callBackId === this.$route.params.id) {
+                        self.$parent.putCPEE(item.callBack, JSON.stringify({ "name": self.$data.name}), function (ok, err) {
+                            console.log(ok, err);
+                            self.$parent.closeModal();
+                        })
+                    }
+                }
                 console.log("orderIt")
+            },
+            giveBack() {
+                console.log("giveBack")
+                this.$parent.closeModal();
             }
         }
     });
     let customerSendsSpecification = Vue.component('customerSendsSpecification', {
-        template: `<modal @close="showModal = false"><h3 slot="header">Order your plane!</h3>
+        template: `<modal @close="$emit('close')"><h3 slot="header">Order your plane!</h3>
             <div slot="body" class="container">
             <div class="field">
                 <div class="control">
                     <label class="radio">
-                        <input type="radio" name="question" value="VodkaBar">VodkaBar
+                        <input type="radio" name="question" value="VodkaBar" v-model="barType">VodkaBar
                     </label>
                     <label class="radio">
-                            <input type="radio" name="question" value="WhiskeyBar">WhiskeyBar
+                            <input type="radio" name="question" value="WhiskeyBar" v-model="barType">WhiskeyBar
                     </label>
                     <label class="radio">
-                            <input type="radio" name="question" value="BeerBar">BeerBar
+                            <input type="radio" name="question" value="BeerBar" v-model="barType">BeerBar
                     </label>
                     <label class="radio">
-                            <input type="radio" name="question" value="SakeBar">SakeBar
+                            <input type="radio" name="question" value="SakeBar" v-model="barType">SakeBar
                     </label>
                     <label class="radio">
-                            <input type="radio" name="question" value="TequillaBar">TequillaBar
+                            <input type="radio" name="question" value="TequillaBar" v-model="barType">TequillaBar
                     </label>
                 </div>
             </div>
             <div class="field is-grouped">
                 <div class="control">
-                    <button class="button is-text">Send</button>
+                    <button class="button is-text" @click="sendIt">Send</button>
                 </div>
                 <div class="control">
-                    <button class="button is-link">Cancel</button>
+                    <button class="button is-link" @click="giveBack">Cancel</button>
                 </div>
             </div>
         </div></modal>`,
+        data: function () {
+            return {
+                barType:''
+            }
+        },
         methods: {
             sendIt() {
+                let self=this;
+                for(item of this.$parent.worklist) {
+                    if(item.callBackId === this.$route.params.id) {
+                        self.$parent.putCPEE(item.callBack, JSON.stringify({ "barType": self.$data.barType}), function (ok, err) {
+                            console.log(ok, err);
+                            self.$parent.closeModal();
+                        })
+                    }
+                }
                 console.log("sendIt")
+            },
+            giveBack() {
+                console.log("giveBack")
+                this.$parent.closeModal();
             }
         }
     });
     let testFlight = Vue.component('testflight', {
-        template: `<modal @close="showModal = false"><h3 slot="header">Order your plane!</h3>
+        template: `<modal @close="$emit('close')">
+            <h3 slot="header">Perform test flight, good luck!</h3>
             <div  slot="body" class="container">
                 <div class="field">
                     <div class="control">
@@ -213,51 +232,84 @@
                 </div>
                 <div class="field is-grouped">
                     <div class="control">
-                        <button class="button is-text">Done</button>
+                        <button class="button is-text"  @click="testFlightIt">Done</button>
                     </div>
                     <div class="control">
-                        <button class="button is-link">Cancel</button>
+                        <button class="button is-link"  @click="giveBack">Cancel</button>
                     </div>
                 </div>
             </div></modal>`,
         methods: {
             testFlightIt() {
+                let self=this;
+                for(item of this.$parent.worklist) {
+                    if(item.callBackId === this.$route.params.id) {
+                        self.$parent.putCPEE(item.callBack, JSON.stringify({}), function (ok, err) {
+                            console.log(ok, err);
+                            self.$parent.closeModal();
+                        })
+                    }
+                }
                 console.log("testFlightIt")
+            },
+            giveBack() {
+                console.log("giveBack")
+                this.$parent.closeModal();
             }
         }
     });
     let evaluateFlight = Vue.component('evaluateFlight', {
-        template:`<modal @close="showModal = false"><h3 slot="header">Order your plane!</h3>
+        template:`<modal @close="$emit('close')">
+            <h3 slot="header">Evaluate test flight</h3>
             <div  slot="body" class="container">
             <div class="field">
                 <div class="control">
                     <label class="checkbox">
-                        <input type="checkbox">I survived
+                        <input type="checkbox" v-model="survived">I survived</input>
                     </label>
                 </div>
             </div>
             <div class="field is-grouped">
                 <div class="control">
-                    <button class="button is-text">Send</button>
+                    <button class="button is-text" @click="evaluateFlight">Send</button>
                 </div>
                 <div class="control">
-                    <button class="button is-link">Cancel</button>
+                    <button class="button is-link" @click="giveBack">Cancel</button>
                 </div>
             </div>
         </div></modal>`,
+        data: function () {
+            return {
+                survived: false
+            }
+        },
         methods: {
-            testFlightIt() {
+            evaluateFlight() {
+                let self=this;
+                for(item of this.$parent.worklist) {
+                    if(item.callBackId === this.$route.params.id) {
+                        self.$parent.putCPEE(item.callBack, JSON.stringify({ "survived": self.$data.survived}), function (ok, err) {
+                            console.log(ok, err);
+                            self.$parent.closeModal();
+                        })
+                    }
+                }
                 console.log("evaluateFlight")
+            },
+            giveBack() {
+                console.log("giveBack")
+                this.$parent.closeModal();
             }
         }
     });
 
     const routes = [
-    { path: '/customerSendsOrder', component: customerSendsOrder },
-    { path: '/customerSendsSpecification', component: customerSendsSpecification },
-    { path: '/testFlight', component: testFlight },
-    { path: '/evaluateFlight', component: evaluateFlight },
-    { path: '/repair', component: repair }
+        { path: '/user/:userName', name: 'main'},
+        { path: '/user/:userName/customerSendsOrder/:id', component: customerSendsOrder,  name: 'customerSendsOrder'},
+        { path: '/user/:userName/customerSendsSpecification/:id', component: customerSendsSpecification,  name: 'customerSendsSpecification' },
+        { path: '/user/:userName/testFlight/:id', component: testFlight,  name: 'testFlight' },
+        { path: '/user/:userName/evaluateFlight/:id', component: evaluateFlight,  name: 'evaluateFlight' },
+        { path: '/user/:userName/repair/:id', component: repair,  name: 'repair' }
     ]
 
     const router = new VueRouter({routes});
@@ -269,17 +321,30 @@
         data: function () {
             return {
                 worklist: [],
-                userName:'customer',
-                showModal: ''
+                userName:'susi',
+                organisation: null,
             }
         },
         created: function () {
-            this.fetchWorklist();
+            this.fetchWorklist(this.$route.params.userName);
+            this.fetchOrganisation();
         },
-        methods: {
-            fetchWorklist: function () {
+        watch: {
+            '$route': function (to, from) {
+                this.fetchWorklist(to.params.userName);
+            }
+        },
+        methods: { 
+            closeModal: function () {
+                router.push({ name: 'main', params: { userName: this.$route.params.userName }})
+            },
+            fetchWorklist: function (role) {
+                url='/worklist';
+                if(role) {
+                    url+='/'+role;
+                }
                 var self = this;
-                fetch('/worklist', {
+                fetch(url, {
                     method: 'get'
                 }).then(function (response) {
                     return response.json();
@@ -289,36 +354,30 @@
                     console.log(err);
                 });
             },
-            dialogCustomerSendsOrder: function () {
-                console.log("dialogCustomerSendsOrder")
-                this.showModal='customerSendsOrder'
+            fetchOrganisation: function () {
+                url='/organisation';
+                var self = this;
+                fetch(url, {
+                    method: 'get'
+                }).then(function (response) {
+                    return response.json();
+                }).then(function (json) {
+                    self.organisation = json;
+                }).catch(function (err) {
+                    console.log(err);
+                });
             },
-            dialogCustomerSendsSpecification: function () {
-                console.log("dialogCustomerSendsSpecification")
-                this.showModal='customerSendsSpecification'
+            putCPEE: function (url, json, callback) {
+                var self = this;
+                fetch(url, {
+                    method: 'put',
+                    body: json
+                }).then(function (response) {
+                    callback(response.status);
+                }).catch(function (err) {
+                    callback(null, err)
+                });
             },
-            dialogRepair: function () {
-                console.log("dialogRepair")
-                this.showModal='dialogRepair'
-            },
-            dialogTestFlight: function () {
-                console.log("dialogTestFlight")
-                this.showModal='dialogTestFlight'
-            }
         }
     });
-
-    function putCPEE (json, uri, callback) {
-        request({method: 'PUT', uri: uri, json: json}, 
-            function (error, response, body) {
-                if (response.statusCode == 201) {
-                    console.log('201' + response)
-                } else {
-                    console.log('error: ' + response.statusCode)
-                    console.log(body)
-                }
-                callback(body, error)
-            }
-        )
-    }
 </script>
