@@ -198,7 +198,7 @@
             
             <arguments>
               <timeout>2</timeout>
-              <role>"customer"</role>
+              <role>"test pilot"</role>
               <organisation>"acme corp"</organisation>
               <link>"http://faljse.info:9666/static/worklist.html#/testFlight"</link>
             </arguments>
@@ -210,7 +210,7 @@
             <method>:post</method>
             <arguments>
               <timeout>2</timeout>
-              <role>"customer"</role>
+              <role>"test pilot"</role>
               <organisation>"acme corp"</organisation>
               <link>"http://faljse.info:9666/static/worklist.html#/evaluateFlight"</link>
             </arguments>
@@ -226,7 +226,7 @@
                 <method>:post</method>
                 <arguments>
                   <timeout>2</timeout>
-                  <role>"customer"</role>
+                  <role>"engineer"</role>
                   <organisation>"acme corp"</organisation>
                   <link>"http://faljse.info:9666/static/worklist.html#/repair"</link>
                 </arguments>

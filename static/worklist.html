@@ -18,10 +18,7 @@
                         <span class="icon"><i class="fa fa-home"></i></span> Home
                     </a>
                 </li>
-                <li>
-                    <a href="#" class="is-active">
-                        <span class="icon"><i class="fa fa-table"></i></span> Users
-                    </a>
+                <li><router-link :to="{ name: 'main', params: { userName: '' }}"><span class="icon"><i class="fa fa-table"></i></span> Users</router-link>     
                     <ul>
                         <div v-if="organisation !== null" class="api list-complete-item">
                             <li    v-for="subject in organisation.subjects[0].subject">
@@ -43,17 +40,18 @@
                     <thead>
                       <tr>
                         <th><abbr title="Position">Pos</abbr></th>
-                        <th>User</th>
-                        <th><abbr title="task">Pld</abbr></th>
-                        <th><abbr title="id">W</abbr></th>
-                        <th><abbr title="status">D</abbr></th>
+                        <th><abbr title="task">Task</abbr></th>
+                        <th><abbr title="User">User</abbr></th>
+                        <th><abbr title="Role">Role</abbr></th>
+                        <th><abbr title="CallbackId">CallbackId</abbr></th>
                       </tr>
                     </thead>
                     <tbody>
                         <tr  v-for="(item, index) in worklist" class="api list-complete-item">
-                            <th> {{ index }} </th>
-                            <td><router-link :to="{ name: item.label, params: { userName: $route.params.userName, id: item.callBackId }}">{{ item.label }}</router-link></td>
-                            <td><router-link :to="{path: item.link}">{{ item.label }}</router-link>
+                            <td> {{ index }} </td>
+                            <td v-if="$route.params.userName !== ''"><router-link :to="{ name: item.label, params: { userName: $route.params.userName, id: item.callBackId }}">{{ item.label }}</router-link></td>
+                            <td v-if="$route.params.userName == ''">{{ item.label }}</td>
+                            <td>{{ item.assignedTo }}</td>
                             <td>{{ item.role }}</td>
                             <td>{{ item.callBackId }}</td>
                         </tr>
@@ -141,10 +139,25 @@
         </div></modal>`,
         data: function () {
             return {
-                name:''
+                name:'',
+                timer: null
             }
         },
+        created: function () {
+            // `this` points to the vm instance
+            console.log('create ' + this)
+            this.timer = setInterval(this.ping, 1000)
+        },
+        destroyed: function () {
+            // `this` points to the vm instance
+            console.log('destroy ' + this)
+            clearInterval(this.timer)
+        },
         methods: {
+            ping() {
+                this.$parent.putTake(this.$route.params.id, this.$route.params.userName)
+                console.log("ping")
+            },
             orderIt()  {
                 let self=this;
                 for(item of this.$parent.worklist) {
@@ -371,11 +384,30 @@
                 var self = this;
                 fetch(url, {
                     method: 'put',
+                    headers: {
+                        'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'
+                    },
                     body: json
                 }).then(function (response) {
                     callback(response.status);
                 }).catch(function (err) {
                     callback(null, err)
+                });
+            },
+            putTake: function (callBackId, userName) {
+                var self = this;
+                fetch('/take', {
+                    method: 'put',
+                    headers: {
+                        'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({callBackId: callBackId, userName: userName})
+                }).then(function (response) {
+                    console.log(response.status)
+                }).catch(function (err) {
+                    console.log('err '+err)
                 });
             },
         }

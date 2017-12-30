@@ -57,7 +57,7 @@ class TaskInfo {
   role: string
   timeout: number
   assignedTo: string
-  assignedTimeout: number
+  assignedTimestamp: number = 0
 }
 
 class WorkList {
@@ -108,9 +108,8 @@ export class App {
 
     router.get('/worklist/:user?', async (ctx, next) => {
       log.info(ctx.path);
-      ctx.type = 'application/json';      
-
-
+      let ts = new Date().getTime();
+      ctx.type = 'application/json';
       let user = ctx.params['user'];
       let subjects=this.organisation.subjects[0];
       let role="";
@@ -121,7 +120,7 @@ export class App {
           let unit = subject.relation[0].$['unit'];
         }
       }
-      if(role === undefined) {
+      if(role === undefined||role === "") {
         let allTasks = [];
         for (let pair of this.workList.tasks) {
           allTasks.push(...pair[1]);
@@ -129,12 +128,32 @@ export class App {
         ctx.body = JSON.stringify(allTasks);
       }
       else {
-        let list=this.workList.tasks.get(role);
-        if(list===undefined) {
-          list=[];
+        let list=[]
+        if(this.workList.tasks.get(role) !== undefined) {
+          for(let task of this.workList.tasks.get(role)) {
+            if(task.assignedTimestamp + (10*1000) < ts ) {
+              list.push(task);
+            }
+          }
         }
         ctx.body = JSON.stringify(list);
       }
+      next();
+    });
+
+    router.put('/take', KoaBody(), async (ctx, next) => {
+      log.info(ctx.path);
+      let userName = ctx.request.body['userName'];
+      let callBackId = ctx.request.body['callBackId'];
+      let ts = new Date().getTime();
+      for (let pair of this.workList.tasks) {
+        for(let task of pair[1]) {
+          if(task.callBackId === callBackId)
+            task.assignedTo = userName;
+            task.assignedTimestamp = ts;
+          }
+      }
+      ctx.body = "";
       next();
     });
 
