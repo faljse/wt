@@ -6,6 +6,7 @@ import * as Faker from 'faker';
 import * as Nodemailer from 'nodemailer';
 import * as fs from 'fs';
 import * as xml2js from 'xml2js'
+import * as builder from 'xmlbuilder'
 
 import { MyLogger } from "./mylogger";
 import * as Request from 'request';
@@ -103,6 +104,47 @@ export class App {
 
     router.get('/', async (ctx, next) => {
       await KoaSend(ctx, '/static/index.html');
+      next();
+    });
+
+    router.post('/logging', KoaBody(), async (ctx, next) => {
+      fs.appendFileSync('log.txt', 'body: \n'  +  JSON.stringify(ctx.request.body, null, 2))
+      fs.appendFileSync('log.txt', 'header: \n' + JSON.stringify(ctx.request.header, null, 2))
+      ctx.response.body='thx!'
+      next();
+    });
+
+    router.get('/logging', async (ctx, next) => {
+      let doc = builder.create('root', { encoding: 'utf-8' })
+        .att('xes.version', '2.0')
+        .att('xes.features', 'arbitrary-depth')
+        .att('xmlns','http://www.xes-standard.org')
+      .ele('extension')
+        .att('name', 'Concept')
+        .att('prefix', 'concept')
+        .att('uri', '"http://www.xes-standard.org/concept.xesext').up()
+      .ele('extension')
+        .att('name', 'Time')
+        .att('prefix', 'time')
+        .att('uri', 'http://www.xes-standard.org/time.xesext').up()
+      .ele('global')
+        .att('scope', 'event')
+        .ele('string')
+          .att('key','concept:name')
+          .att('value','').up()
+        .ele('date')
+          .att('key','time:timestamp')
+          .att('value','1970-01-01T00:00:00.000+00:00').up()
+        .ele('string')
+          .att('key','system')
+          .att('value','').up()
+        .up()
+      .ele('trace')
+
+
+        
+    .end({ pretty: true });
+      ctx.response.body =doc.toString();
       next();
     });
 
