@@ -120,7 +120,7 @@ export class App {
           let unit = subject.relation[0].$['unit'];
         }
       }
-      if(role === undefined||role === "") {
+      if(role === undefined||role == ""||role == "root") {
         let allTasks = [];
         for (let pair of this.workList.tasks) {
           allTasks.push(...pair[1]);
@@ -152,6 +152,22 @@ export class App {
             task.assignedTo = userName;
             task.assignedTimestamp = ts;
           }
+      }
+      ctx.body = "";
+      next();
+    });
+
+    router.put('/finish', KoaBody(), async (ctx, next) => {
+      log.info(ctx.path);
+      let userName = ctx.request.body['userName'];
+      let callBackId = ctx.request.body['callBackId'];
+      let ts = new Date().getTime();
+      for (let pair of this.workList.tasks) {
+        for(let i=0; i<pair[1].length;i++) {
+          if(pair[1][i].callBackId==callBackId) {
+            pair[1].splice(i,1);
+          }
+        }
       }
       ctx.body = "";
       next();

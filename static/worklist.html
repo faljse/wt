@@ -18,7 +18,7 @@
                         <span class="icon"><i class="fa fa-home"></i></span> Home
                     </a>
                 </li>
-                <li><router-link :to="{ name: 'main', params: { userName: '' }}"><span class="icon"><i class="fa fa-table"></i></span> Users</router-link>     
+                <li><router-link :to="{ name: 'main', params: { userName: 'root' }}"><span class="icon"><i class="fa fa-table"></i></span> Users</router-link>     
                     <ul>
                         <div v-if="organisation !== null" class="api list-complete-item">
                             <li    v-for="subject in organisation.subjects[0].subject">
@@ -49,8 +49,8 @@
                     <tbody>
                         <tr  v-for="(item, index) in worklist" class="api list-complete-item">
                             <td> {{ index }} </td>
-                            <td v-if="$route.params.userName !== ''"><router-link :to="{ name: item.label, params: { userName: $route.params.userName, id: item.callBackId }}">{{ item.label }}</router-link></td>
-                            <td v-if="$route.params.userName == ''">{{ item.label }}</td>
+                            <td v-if="$route.params.userName !== 'root'"><router-link :to="{ name: item.label, params: { userName: $route.params.userName, id: item.callBackId }}">{{ item.label }}</router-link></td>
+                            <td v-if="$route.params.userName == 'root'">{{ item.label }}</td>
                             <td>{{ item.assignedTo }}</td>
                             <td>{{ item.role }}</td>
                             <td>{{ item.callBackId }}</td>
@@ -164,6 +164,7 @@
                     if(item.callBackId === this.$route.params.id) {
                         self.$parent.putCPEE(item.callBack, JSON.stringify({ "name": self.$data.name}), function (ok, err) {
                             console.log(ok, err);
+                            self.$parent.putFinish(self.$route.params.id, self.$route.params.userName);
                             self.$parent.closeModal();
                         })
                     }
@@ -219,6 +220,7 @@
                     if(item.callBackId === this.$route.params.id) {
                         self.$parent.putCPEE(item.callBack, JSON.stringify({ "barType": self.$data.barType}), function (ok, err) {
                             console.log(ok, err);
+                            self.$parent.putFinish(self.$route.params.id, self.$route.params.userName);
                             self.$parent.closeModal();
                         })
                     }
@@ -259,6 +261,7 @@
                     if(item.callBackId === this.$route.params.id) {
                         self.$parent.putCPEE(item.callBack, JSON.stringify({}), function (ok, err) {
                             console.log(ok, err);
+                            self.$parent.putFinish(self.$route.params.id, self.$route.params.userName);
                             self.$parent.closeModal();
                         })
                     }
@@ -303,6 +306,7 @@
                     if(item.callBackId === this.$route.params.id) {
                         self.$parent.putCPEE(item.callBack, JSON.stringify({ "survived": self.$data.survived}), function (ok, err) {
                             console.log(ok, err);
+                            self.$parent.putFinish(self.$route.params.id, self.$route.params.userName);
                             self.$parent.closeModal();
                         })
                     }
@@ -324,10 +328,7 @@
         { path: '/user/:userName/evaluateFlight/:id', component: evaluateFlight,  name: 'evaluateFlight' },
         { path: '/user/:userName/repair/:id', component: repair,  name: 'repair' }
     ]
-
-    const router = new VueRouter({routes});
-
-    
+    const router = new VueRouter({routes});  
     var app = new Vue({
         el: '#app',
         router: router,
@@ -336,11 +337,14 @@
                 worklist: [],
                 userName:'susi',
                 organisation: null,
+                timer: null
             }
         },
         created: function () {
             this.fetchWorklist(this.$route.params.userName);
             this.fetchOrganisation();
+            this.timer = setInterval(this.refresh, 700)
+
         },
         watch: {
             '$route': function (to, from) {
@@ -348,6 +352,9 @@
             }
         },
         methods: { 
+            refresh: function () {
+                this.fetchWorklist(this.$route.params.userName);
+            },
             closeModal: function () {
                 router.push({ name: 'main', params: { userName: this.$route.params.userName }})
             },
@@ -398,6 +405,21 @@
             putTake: function (callBackId, userName) {
                 var self = this;
                 fetch('/take', {
+                    method: 'put',
+                    headers: {
+                        'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({callBackId: callBackId, userName: userName})
+                }).then(function (response) {
+                    console.log(response.status)
+                }).catch(function (err) {
+                    console.log('err '+err)
+                });
+            },
+            putFinish: function (callBackId, userName) {
+                var self = this;
+                fetch('/finish', {
                     method: 'put',
                     headers: {
                         'Accept': 'application/json, text/plain, */*',
