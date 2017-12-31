@@ -111,14 +111,20 @@ export class App {
       let ts = new Date().getTime();
       ctx.type = 'application/json';
       let user = ctx.params['user'];
-      let subjects=this.organisation.subjects[0];
-      let role="";
+      let subjects = this.organisation.subjects[0];
+      let role = "";
       for(let subject of subjects.subject) {
         let name = subject.$['id'];
-        if(name===user) {
+        if(name == user) {
           role = subject.relation[0].$['role'];
           let unit = subject.relation[0].$['unit'];
         }
+      }
+      for (let pair of this.workList.tasks) {
+        for(let task of pair[1]) {
+          if(task.assignedTimestamp + (3*1000) < ts )
+            task.assignedTo = null;
+          }
       }
       if(role === undefined||role == ""||role == "root") {
         let allTasks = [];
@@ -131,7 +137,7 @@ export class App {
         let list=[]
         if(this.workList.tasks.get(role) !== undefined) {
           for(let task of this.workList.tasks.get(role)) {
-            if(task.assignedTimestamp + (10*1000) < ts ) {
+            if(task.assignedTo == null || task.assignedTo == user) {
               list.push(task);
             }
           }
@@ -151,6 +157,20 @@ export class App {
           if(task.callBackId === callBackId)
             task.assignedTo = userName;
             task.assignedTimestamp = ts;
+          }
+      }
+      ctx.body = "";
+      next();
+    });
+
+    router.put('/giveBack', KoaBody(), async (ctx, next) => {
+      log.info(ctx.path);
+      let userName = ctx.request.body['userName'];
+      let callBackId = ctx.request.body['callBackId'];
+      for (let pair of this.workList.tasks) {
+        for(let task of pair[1]) {
+          if(task.callBackId === callBackId)
+            task.assignedTo = null;
           }
       }
       ctx.body = "";

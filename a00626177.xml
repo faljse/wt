@@ -6,6 +6,11 @@
     <hasSurvived xmlns="http://riddl.org/ns/common-patterns/properties/1.0">false</hasSurvived>
   </dataelements>
   <handlerwrapper>DefaultHandlerWrapper</handlerwrapper>
+  <handlers>
+  <handler url="http://faljse.info:9666/logging">
+    <events topic='activity'>calling,failed,manipulating,done</events>
+  </handler>
+</handlers>
   <endpoints>
     <timeout xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://gruppe.wst.univie.ac.at/~mangler/services/timeout.php</timeout>
     <customerSendsOrder xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/receive</customerSendsOrder>
@@ -22,7 +27,7 @@
     <assemblePlane xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/assemblePlane</assemblePlane>
     <testFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/receive</testFlight>
     <evaluateFlight xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/receive</evaluateFlight>
-    <repair xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/static/receive</repair>
+    <repair xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/receive</repair>
     <deliverPlane xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/deliverPlane</deliverPlane>
     <receiveConfirmation xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/receiveConfirmation</receiveConfirmation>
   </endpoints>

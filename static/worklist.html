@@ -99,15 +99,57 @@
             <h3 slot="header">Order your plane!</h3>
                 <div slot="body" class="field">
                 <div class="control">
-                    <button class="button is-text">Repair Body</button>
-                    <button class="button is-text">Repair Engine</button>
-                    <button class="button is-text">Repair Avionics</button>
-                    <button class="button is-text">Repair Radio</button>
+                    <label class="radio">
+                        <input type="radio" name="question" value="Repair Body" v-model="repairType">Repair Body
+                    </label>
+                    <label class="radio">
+                            <input type="radio" name="question" value="Repair Engine" v-model="repairType">Repair Engine
+                    </label>
+                    <label class="radio">
+                            <input type="radio" name="question" value="Repair Avionics" v-model="repairType">Repair Avionics
+                    </label>
+                    <label class="radio">
+                            <input type="radio" name="question" value="Repair Radio" v-model="repairType">Repair Radio
+                    </label>
                 </div>
+                <div class="field is-grouped">
+                <div class="control">
+                    <button class="button is-text" @click="repairIt">Order</button>
+                </div>
+                <div class="control">
+                    <button class="button is-link" @click="giveBack">Cancel</button>
+                </div>
+            </div>
             </div></modal>`,
+        data: function () {
+            return {
+                repairType: 'Repair Engine',
+                timer: null
+            }
+        },
+        created: function () {
+            this.timer = setInterval(this.ping, 1000)
+        },
+        destroyed: function () {
+            clearInterval(this.timer)
+        },
         methods: {
+            ping() {
+                this.$parent.putTake(this.$route.params.id, this.$route.params.userName)
+            },
             repairIt() {
-                console.log("repairIt")
+                let self=this;
+                let id=this.$route.params.id;
+                let userName=this.$route.params.userName
+                self.$parent.putCPEE(id, JSON.stringify({}), function (ok, err) {
+                    if(err) console.log(err);
+                    self.$parent.putFinish(id, userName);
+                    self.$parent.closeModal();
+                })
+            },
+            giveBack() {
+                console.log("giveBack")
+                this.$parent.closeModal();
             }
         }
     });
@@ -144,32 +186,24 @@
             }
         },
         created: function () {
-            // `this` points to the vm instance
-            console.log('create ' + this)
             this.timer = setInterval(this.ping, 1000)
         },
         destroyed: function () {
-            // `this` points to the vm instance
-            console.log('destroy ' + this)
             clearInterval(this.timer)
         },
         methods: {
             ping() {
                 this.$parent.putTake(this.$route.params.id, this.$route.params.userName)
-                console.log("ping")
             },
             orderIt()  {
                 let self=this;
-                for(item of this.$parent.worklist) {
-                    if(item.callBackId === this.$route.params.id) {
-                        self.$parent.putCPEE(item.callBack, JSON.stringify({ "name": self.$data.name}), function (ok, err) {
-                            console.log(ok, err);
-                            self.$parent.putFinish(self.$route.params.id, self.$route.params.userName);
-                            self.$parent.closeModal();
-                        })
-                    }
-                }
-                console.log("orderIt")
+                let id=this.$route.params.id;
+                let userName=this.$route.params.userName
+                self.$parent.putCPEE(id, JSON.stringify({ "name": self.$data.name}), function (ok, err) {
+                    if(err) console.log(err);
+                    self.$parent.putFinish(id, userName);
+                    self.$parent.closeModal();
+                })
             },
             giveBack() {
                 console.log("giveBack")
@@ -210,22 +244,29 @@
         </div></modal>`,
         data: function () {
             return {
-                barType:''
+                barType: 'TequillaBar',
+                timer: null
             }
         },
+        created: function () {
+            this.timer = setInterval(this.ping, 1000)
+        },
+        destroyed: function () {
+            clearInterval(this.timer)
+        },
         methods: {
+            ping() {
+                this.$parent.putTake(this.$route.params.id, this.$route.params.userName)
+            },
             sendIt() {
                 let self=this;
-                for(item of this.$parent.worklist) {
-                    if(item.callBackId === this.$route.params.id) {
-                        self.$parent.putCPEE(item.callBack, JSON.stringify({ "barType": self.$data.barType}), function (ok, err) {
-                            console.log(ok, err);
-                            self.$parent.putFinish(self.$route.params.id, self.$route.params.userName);
-                            self.$parent.closeModal();
-                        })
-                    }
-                }
-                console.log("sendIt")
+                let id=this.$route.params.id;
+                let userName=this.$route.params.userName
+                self.$parent.putCPEE(id, JSON.stringify({ "barType": self.$data.barType}), function (ok, err) {
+                    if(err) console.log(err);
+                    self.$parent.putFinish(id, userName);
+                    self.$parent.closeModal();
+                })
             },
             giveBack() {
                 console.log("giveBack")
@@ -254,19 +295,30 @@
                     </div>
                 </div>
             </div></modal>`,
+        data: function () {
+            return {
+                timer: null
+            }
+        },
+        created: function () {
+            this.timer = setInterval(this.ping, 1000)
+        },
+        destroyed: function () {
+            clearInterval(this.timer)
+        },
         methods: {
+            ping() {
+                this.$parent.putTake(this.$route.params.id, this.$route.params.userName)
+            },
             testFlightIt() {
                 let self=this;
-                for(item of this.$parent.worklist) {
-                    if(item.callBackId === this.$route.params.id) {
-                        self.$parent.putCPEE(item.callBack, JSON.stringify({}), function (ok, err) {
-                            console.log(ok, err);
-                            self.$parent.putFinish(self.$route.params.id, self.$route.params.userName);
-                            self.$parent.closeModal();
-                        })
-                    }
-                }
-                console.log("testFlightIt")
+                let id=this.$route.params.id;
+                let userName=this.$route.params.userName
+                self.$parent.putCPEE(id, JSON.stringify({}), function (ok, err) {
+                    if(err) console.log(err);
+                    self.$parent.putFinish(id, userName);
+                    self.$parent.closeModal();
+                })
             },
             giveBack() {
                 console.log("giveBack")
@@ -296,22 +348,29 @@
         </div></modal>`,
         data: function () {
             return {
-                survived: false
+                survived: false,
+                timer: null
             }
         },
+        created: function () {
+            this.timer = setInterval(this.ping, 1000)
+        },
+        destroyed: function () {
+            clearInterval(this.timer)
+        },
         methods: {
+            ping() {
+                this.$parent.putTake(this.$route.params.id, this.$route.params.userName)
+            },
             evaluateFlight() {
                 let self=this;
-                for(item of this.$parent.worklist) {
-                    if(item.callBackId === this.$route.params.id) {
-                        self.$parent.putCPEE(item.callBack, JSON.stringify({ "survived": self.$data.survived}), function (ok, err) {
-                            console.log(ok, err);
-                            self.$parent.putFinish(self.$route.params.id, self.$route.params.userName);
-                            self.$parent.closeModal();
-                        })
-                    }
-                }
-                console.log("evaluateFlight")
+                let id=this.$route.params.id;
+                let userName=this.$route.params.userName
+                self.$parent.putCPEE(id, JSON.stringify({ "survived": self.$data.survived}), function (ok, err) {
+                    if(err) console.log(err);
+                    self.$parent.putFinish(id, userName);
+                    self.$parent.closeModal();
+                })
             },
             giveBack() {
                 console.log("giveBack")
@@ -387,8 +446,18 @@
                     console.log(err);
                 });
             },
-            putCPEE: function (url, json, callback) {
+            putCPEE: function (id, json, callback) {
                 var self = this;
+                let url = null;
+                for(item of this.worklist) {
+                    if(item.callBackId === id) {
+                        url=item.callBack
+                    }
+                }
+                if(url == null) {
+                    log ("ERR cant find url for id " + id)
+                    return;
+                }
                 fetch(url, {
                     method: 'put',
                     headers: {
@@ -412,7 +481,7 @@
                     },
                     body: JSON.stringify({callBackId: callBackId, userName: userName})
                 }).then(function (response) {
-                    console.log(response.status)
+                    return;
                 }).catch(function (err) {
                     console.log('err '+err)
                 });
@@ -420,6 +489,21 @@
             putFinish: function (callBackId, userName) {
                 var self = this;
                 fetch('/finish', {
+                    method: 'put',
+                    headers: {
+                        'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({callBackId: callBackId, userName: userName})
+                }).then(function (response) {
+                    console.log(response.status)
+                }).catch(function (err) {
+                    console.log('err '+err)
+                });
+            },
+            putGiveBack: function (callBackId, userName) {
+                var self = this;
+                fetch('/giveBack', {
                     method: 'put',
                     headers: {
                         'Accept': 'application/json, text/plain, */*',
