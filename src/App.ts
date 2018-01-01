@@ -51,6 +51,7 @@ class CallbackData {
 }
 
 class TaskInfo {
+  cpeeInstance: string;
   label: string
   callBackId: string
   callBack: string
@@ -59,6 +60,13 @@ class TaskInfo {
   timeout: number
   assignedTo: string
   assignedTimestamp: number = 0
+}
+
+class TraceInfo {
+  link: string;
+  role: string;
+  callBackId: string;
+  name: string
 }
 
 class WorkList {
@@ -79,6 +87,7 @@ export class App {
   private ci = new CallbackData();
   private template;
   private organisation;
+  private traces = new  Map<string, TraceInfo[]>();
 
   //Run configuration methods on the Express instance.
   constructor(private port) {
@@ -138,11 +147,22 @@ export class App {
         .ele('string')
           .att('key','system')
           .att('value','').up()
-        .up()
-      .ele('trace')
+        .up();
 
 
-        
+      for (let pair of this.traces) {
+        let trace=doc.ele('trace')
+        for(let ti of pair[1]) {
+          trace.ele('event')
+          .att('label', ti.name)
+          .att('callBackId', ti.callBackId)
+          .att('role',ti.role)
+          .att('link',ti.link)
+        }
+    }
+
+
+    doc
     .end({ pretty: true });
       ctx.response.body =doc.toString();
       next();
@@ -226,7 +246,7 @@ export class App {
       let ts = new Date().getTime();
       for (let pair of this.workList.tasks) {
         for(let i=0; i<pair[1].length;i++) {
-          if(pair[1][i].callBackId==callBackId) {
+          if(pair[1][i].callBackId == callBackId) {
             pair[1].splice(i,1);
           }
         }
@@ -286,10 +306,25 @@ export class App {
       task.callBackId=a['cpee-callback_id']
       task.callBack=a['cpee-callback']
       task.label=a['cpee-label']
+      task.cpeeInstance=a['cpee-instance']
       task.link=data.link
       task.role=data.role
       task.timeout=data.timeout
       taskList.push(task);
+
+      let ti = new TraceInfo();
+      ti.name = task.label;
+      ti.callBackId = task.callBackId;
+      ti.role = task.role;
+      ti.link = task.link;
+
+      let list=this.traces.get(task.cpeeInstance);
+      if(list == undefined) {
+        list= [];
+      }
+      list.push(ti);
+      this.traces.set(task.cpeeInstance, list);
+      
       ctx.set('CPEE-CALLBACK', 'true')
       ctx.body = JSON.stringify(ctx.body = {
         name: Faker.fake("{{name.lastName}}, {{name.firstName}} {{name.suffix}}")
