@@ -6,11 +6,6 @@
     <hasSurvived xmlns="http://riddl.org/ns/common-patterns/properties/1.0">false</hasSurvived>
   </dataelements>
   <handlerwrapper>DefaultHandlerWrapper</handlerwrapper>
-  <handlers>
-  <handler url="http://faljse.info:9666/logging">
-    <events topic='activity'>calling,failed,manipulating,done</events>
-  </handler>
-</handlers>
   <endpoints>
     <timeout xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://gruppe.wst.univie.ac.at/~mangler/services/timeout.php</timeout>
     <customerSendsOrder xmlns="http://riddl.org/ns/common-patterns/properties/1.0">http://faljse.info:9666/receive</customerSendsOrder>
@@ -70,9 +65,9 @@
                   <label>"Order Seats"</label>
                   <method>:post</method>
                   <arguments>
-				  <amount>77</amount>
-			<from>"martin.kunz@univie.ac.at"</from>
-			<notify>"martin.michael.kunz@gmail.com"</notify>
+                    <amount>77</amount>
+                    <from>"martin.kunz@univie.ac.at"</from>
+                    <notify>"martin.michael.kunz@gmail.com"</notify>
                   </arguments>
                 </parameters>
               </call>
@@ -83,9 +78,9 @@
                   <label>"Order Toilet"</label>
                   <method>:post</method>
                   <arguments>
-				  <amount>2</amount>
-			<from>"martin.kunz@univie.ac.at"</from>
-			<notify>"martin.michael.kunz@gmail.com"</notify>
+                    <amount>2</amount>
+                    <from>"martin.kunz@univie.ac.at"</from>
+                    <notify>"martin.michael.kunz@gmail.com"</notify>
                   </arguments>
                 </parameters>
               </call>
@@ -99,8 +94,8 @@
                       <method>:post</method>
                       <arguments>
                         <amount>1</amount>
-			<from>"martin.kunz@univie.ac.at"</from>
-			<notify>"martin.michael.kunz@gmail.com"</notify>
+                        <from>"martin.kunz@univie.ac.at"</from>
+                        <notify>"martin.michael.kunz@gmail.com"</notify>
                       </arguments>
                     </parameters>
                   </call>
@@ -112,8 +107,8 @@
                       <method>:post</method>
                       <arguments>
                         <amount>1</amount>
-			<from>"martin.kunz@univie.ac.at"</from>
-			<notify>"martin.michael.kunz@gmail.com"</notify>
+                        <from>"martin.kunz@univie.ac.at"</from>
+                        <notify>"martin.michael.kunz@gmail.com"</notify>
                       </arguments>
                     </parameters>
                   </call>
@@ -125,8 +120,8 @@
                       <method>:post</method>
                       <arguments>
                         <amount>1</amount>
-			<from>"martin.kunz@univie.ac.at"</from>
-			<notify>"martin.michael.kunz@gmail.com"</notify>
+                        <from>"martin.kunz@univie.ac.at"</from>
+                        <notify>"martin.michael.kunz@gmail.com"</notify>
                       </arguments>
                     </parameters>
                   </call>
@@ -138,8 +133,8 @@
                       <method>:post</method>
                       <arguments>
                         <amount>1</amount>
-			<from>"martin.kunz@univie.ac.at"</from>
-			<notify>"martin.michael.kunz@gmail.com"</notify>
+                        <from>"martin.kunz@univie.ac.at"</from>
+                        <notify>"martin.michael.kunz@gmail.com"</notify>
                       </arguments>
                     </parameters>
                   </call>
@@ -151,8 +146,8 @@
                       <method>:post</method>
                       <arguments>
                         <amount>1</amount>
-			<from>"martin.kunz@univie.ac.at"</from>
-			<notify>"martin.michael.kunz@gmail.com"</notify>
+                        <from>"martin.kunz@univie.ac.at"</from>
+                        <notify>"martin.michael.kunz@gmail.com"</notify>
                       </arguments>
                     </parameters>
                   </call>
@@ -166,11 +161,11 @@
             <parameters>
               <label>"Build Base Model"</label>
               <method>:post</method>
-                      <arguments>
-                        <amount>1</amount>
-			<from>"martin.kunz@univie.ac.at"</from>
-			<notify>"martin.michael.kunz@gmail.com"</notify>
-                      </arguments>
+              <arguments>
+                <amount>1</amount>
+                <from>"martin.kunz@univie.ac.at"</from>
+                <notify>"martin.michael.kunz@gmail.com"</notify>
+              </arguments>
             </parameters>
           </call>
         </parallel_branch>
@@ -179,28 +174,27 @@
         <parameters>
           <label>"Wait for Parts"</label>
           <method>:post</method>
-		  <arguments>
-			<from>"martin.kunz@univie.ac.at"</from>
-			<notify>"martin.michael.kunz@gmail.com"</notify>
-		  </arguments>
+          <arguments>
+            <from>"martin.kunz@univie.ac.at"</from>
+            <notify>"martin.michael.kunz@gmail.com"</notify>
+          </arguments>
         </parameters>
       </call>
       <call id="a12" endpoint="assemblePlane">
         <parameters>
           <label>"Assemble Plane"</label>
           <method>:post</method>
-		  <arguments>
-			<from>"martin.kunz@univie.ac.at"</from>
-			<notify>"martin.michael.kunz@gmail.com"</notify>
-		  </arguments>
+          <arguments>
+            <from>"martin.kunz@univie.ac.at"</from>
+            <notify>"martin.michael.kunz@gmail.com"</notify>
+          </arguments>
         </parameters>
       </call>
-      <loop mode="post_test" condition="">
+      <loop mode="post_test" condition="data.hasSurvived == false">
         <call id="a16" endpoint="testFlight">
           <parameters>
             <label>testFlight</label>
             <method>:post</method>
-            
             <arguments>
               <timeout>2</timeout>
               <role>"test pilot"</role>
@@ -224,7 +218,7 @@
           <update output="result"/>
         </call>
         <choose mode="exclusive">
-          <alternative condition="data.hasSurvived == true">
+          <alternative condition="data.hasSurvived == false">
             <call id="a18" endpoint="repair">
               <parameters>
                 <label>repair</label>
@@ -248,8 +242,8 @@
           <label>"Deliver Plane"</label>
           <method>:post</method>
           <arguments>
-      			<from>"martin.kunz@univie.ac.at"</from>
-			      <notify>"martin.michael.kunz@gmail.com"</notify>
+            <from>"martin.kunz@univie.ac.at"</from>
+            <notify>"martin.michael.kunz@gmail.com"</notify>
           </arguments>
         </parameters>
       </call>

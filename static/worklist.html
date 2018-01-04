@@ -13,12 +13,7 @@
     <section class="main-content columns is-fullheight">
         <aside class="column is-2 is-narrow-mobile is-fullheight section is-hidden-mobile">
             <ul class="menu-list">
-                <li>
-                    <a href="#" class="">
-                        <span class="icon"><i class="fa fa-home"></i></span> Home
-                    </a>
-                </li>
-                <li><router-link :to="{ name: 'main', params: { userName: 'root' }}"><span class="icon"><i class="fa fa-table"></i></span> Users</router-link>     
+                <li><router-link :to="{ name: 'main', params: { userName: 'root' }}"><span class="icon"><i class="fa fa-table"></i></span> Root</router-link>     
                     <ul>
                         <div v-if="organisation !== null" class="api list-complete-item">
                             <li    v-for="subject in organisation.subjects[0].subject">
@@ -27,11 +22,7 @@
                         </div>
                     </ul>
                 </li>
-                <li>
-                    <a href="#" class="">
-                        <span class="icon"><i class="fa fa-info"></i></span> About
-                    </a>
-                </li>
+
             </ul>
         </aside>
         <div class="container column is-10">
@@ -44,16 +35,18 @@
                         <th><abbr title="User">User</abbr></th>
                         <th><abbr title="Role">Role</abbr></th>
                         <th><abbr title="CallbackId">CallbackId</abbr></th>
+                        <th><abbr title="Instance">Instance</abbr></th>
                       </tr>
                     </thead>
                     <tbody>
                         <tr  v-for="(item, index) in worklist" class="api list-complete-item">
                             <td> {{ index }} </td>
-                            <td v-if="$route.params.userName !== 'root'"><router-link :to="{ name: item.label, params: { userName: $route.params.userName, id: item.callBackId }}">{{ item.label }}</router-link></td>
-                            <td v-if="$route.params.userName == 'root'">{{ item.label }}</td>
+                            <td v-if="$route.params.userName !== undefined && $route.params.userName !== 'root'"><router-link :to="{ name: item.label, params: { userName: $route.params.userName, id: item.callBackId }}">{{ item.label }}</router-link></td>
+                            <td v-if="$route.params.userName !== undefined || $route.params.userName == 'root'">{{ item.label }}</td>
                             <td>{{ item.assignedTo }}</td>
                             <td>{{ item.role }}</td>
                             <td>{{ item.callBackId }}</td>
+                            <td>{{ item.cpeeInstance }}</td>
                         </tr>
                     </tbody>
                 </table>                 
@@ -455,7 +448,7 @@
                     }
                 }
                 if(url == null) {
-                    log ("ERR cant find url for id " + id)
+                    console.log ("ERR cant find url for id " + id)
                     return;
                 }
                 fetch(url, {

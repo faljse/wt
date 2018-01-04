@@ -63,6 +63,10 @@ class TaskInfo {
 }
 
 class TraceInfo {
+  response: string;
+  timestamp: string;
+  headers: object;
+  params: object;
   link: string;
   role: string;
   callBackId: string;
@@ -107,6 +111,17 @@ export class App {
     this.koa.listen(this.port);
   }
 
+  private log(ti: TraceInfo, instanceName: string): void {
+    let now = new Date();
+    ti.timestamp = now.toISOString();
+    let list=this.traces.get(instanceName);
+    if(list == undefined) {
+      list= [];
+    }
+    list.push(ti);
+    this.traces.set(instanceName, list);
+  }
+
   // Configure API endpoints.
   private routes(): void {
     let router = new KoaRouter();
@@ -139,7 +154,7 @@ export class App {
       .ele('global')
         .att('scope', 'event')
         .ele('string')
-          .att('key','concept:name')
+          .att('key','concept:instance')
           .att('value','').up()
         .ele('date')
           .att('key','time:timestamp')
@@ -152,16 +167,38 @@ export class App {
 
       for (let pair of this.traces) {
         let trace=doc.ele('trace')
+        trace.ele('string').att('key','concept:instance').att('value',pair[0])
         for(let ti of pair[1]) {
-          trace.ele('event')
-          .att('label', ti.name)
-          .att('callBackId', ti.callBackId)
-          .att('role',ti.role)
-          .att('link',ti.link)
+          let e= trace.ele('event')
+          e.ele('date').att('key','time:timestamp').att('value', ti.timestamp)
+          if(ti.name)
+            e.att('label', ti.name)
+          if(ti.callBackId)
+            e.att('callBackId', ti.callBackId)
+          if(ti.role)
+            e.att('role',ti.role)
+          if(ti.link)
+            e.att('link',ti.link)
+          if(ti.response)
+            e.att('response',ti.response)
+          if(ti.headers) {
+            let h=e.ele('headers')
+            for(let prop in ti.headers) {
+              if (ti.headers.hasOwnProperty(prop)) {
+                h.ele(prop, ti.headers[prop])
+              }
+            }
+          }
+          if(ti.params) {
+            let h=e.ele('params')
+            for(let prop in ti.params) {
+              if (ti.params.hasOwnProperty(prop)) {
+                h.ele(prop, ti.params[prop])
+              }
+            }
+          }
         }
     }
-
-
     doc
     .end({ pretty: true });
       ctx.response.body =doc.toString();
@@ -312,31 +349,27 @@ export class App {
       task.timeout=data.timeout
       taskList.push(task);
 
+      ctx.set('CPEE-CALLBACK', 'true')
+      ctx.body = JSON.stringify(ctx.body = {
+        name: Faker.fake("{{name.lastName}}, {{name.firstName}} {{name.suffix}}")
+      });
+
+      
       let ti = new TraceInfo();
       ti.name = task.label;
       ti.callBackId = task.callBackId;
       ti.role = task.role;
       ti.link = task.link;
-
-      let list=this.traces.get(task.cpeeInstance);
-      if(list == undefined) {
-        list= [];
-      }
-      list.push(ti);
-      this.traces.set(task.cpeeInstance, list);
-      
-      ctx.set('CPEE-CALLBACK', 'true')
-      ctx.body = JSON.stringify(ctx.body = {
-        name: Faker.fake("{{name.lastName}}, {{name.firstName}} {{name.suffix}}")
-      });
+      ti.headers = ctx.request.headers;
+      ti.params = ctx.request.body;
+      ti.response = ctx.body
+      this.log(ti, task.cpeeInstance);
       next();
     });
+
+
 
     //auto: buildBaseModel
-    router.get('/buildBaseModel', async (ctx, next) => {
-      await KoaSend(ctx, '/static/buildBaseModel.html');
-      next();
-    });
     router.post('/buildBaseModel', KoaBody(), async (ctx, next) => {
       log.info("buildBaseModel: %s", ctx.request.body);
       let amount: number = ctx.request.body['amount'];
@@ -344,6 +377,13 @@ export class App {
       ctx.body = JSON.stringify({
         build: "success"
       })
+      let id:string=ctx.request.header['cpee-instance'];
+      let ti = new TraceInfo();
+      ti.name = 'buildBaseModel';
+      ti.headers = ctx.request.headers;
+      ti.params =  ctx.request.body;
+      ti.response = ctx.body;
+      this.log(ti, id);
       next();
     });
 
@@ -362,6 +402,14 @@ export class App {
       });
       ctx.type = 'application/json';
       ctx.body = JSON.stringify({success: {notified:notify}});
+
+      let id:string=ctx.request.header['cpee-instance'];
+      let ti = new TraceInfo();
+      ti.name = 'orderSeats';
+      ti.headers = ctx.request.headers;
+      ti.params =  ctx.request.body;
+      ti.response = ctx.body;
+      this.log(ti, id);
       next();
     });
 
@@ -380,6 +428,14 @@ export class App {
       });
       ctx.type = 'application/json';
       ctx.body = JSON.stringify({success: {notified:notify}});
+
+      let id:string=ctx.request.header['cpee-instance'];
+      let ti = new TraceInfo();
+      ti.name = 'orderToilet';
+      ti.headers = ctx.request.headers;
+      ti.params =  ctx.request.body;
+      ti.response = ctx.body;
+      this.log(ti, id);
       next();
     });
 
@@ -416,6 +472,14 @@ export class App {
       });
       ctx.type = 'application/json';
       ctx.body = JSON.stringify({success: {notified:notify}});
+
+      let id:string=ctx.request.header['cpee-instance'];
+      let ti = new TraceInfo();
+      ti.name = 'orderWhiskeyBar';
+      ti.headers = ctx.request.headers;
+      ti.params =  ctx.request.body;
+      ti.response = ctx.body;
+      this.log(ti, id);
       next();
     });
 
@@ -434,6 +498,14 @@ export class App {
       });
       ctx.type = 'application/json';
       ctx.body = JSON.stringify({success: {notified:notify}});
+
+      let id:string=ctx.request.header['cpee-instance'];
+      let ti = new TraceInfo();
+      ti.name = 'orderTequillaBar';
+      ti.headers = ctx.request.headers;
+      ti.params =  ctx.request.body;
+      ti.response = ctx.body;
+      this.log(ti, id);
       next();
     });
 
@@ -452,6 +524,14 @@ export class App {
       });
       ctx.type = 'application/json';
       ctx.body = JSON.stringify({success: {notified:notify}});
+
+      let id:string=ctx.request.header['cpee-instance'];
+      let ti = new TraceInfo();
+      ti.name = 'orderBeerBar';
+      ti.headers = ctx.request.headers;
+      ti.params =  ctx.request.body;
+      ti.response = ctx.body;
+      this.log(ti, id);
       next();
     });
 
@@ -470,6 +550,14 @@ export class App {
       });
       ctx.type = 'application/json';
       ctx.body = JSON.stringify({success: {notified:notify}});
+
+      let id:string=ctx.request.header['cpee-instance'];
+      let ti = new TraceInfo();
+      ti.name = 'orderSakeBar';
+      ti.headers = ctx.request.headers;
+      ti.params =  ctx.request.body;
+      ti.response = ctx.body;
+      this.log(ti, id);
       next();
     });
 
@@ -479,6 +567,14 @@ export class App {
       await this.sleep(4000);
       ctx.type = 'application/json';
       ctx.body = JSON.stringify({success: {arrived:true}});
+
+      let id:string=ctx.request.header['cpee-instance'];
+      let ti = new TraceInfo();
+      ti.name = 'waitForParts';
+      ti.headers = ctx.request.headers;
+      ti.params =  ctx.request.body;
+      ti.response = ctx.body;
+      this.log(ti, id);
       next();
     });
 
@@ -488,16 +584,19 @@ export class App {
       await this.sleep(4000);
       ctx.type = 'application/json';
       ctx.body = JSON.stringify({success: {ready:true}});
+
+      let id:string=ctx.request.header['cpee-instance'];
+      let ti = new TraceInfo();
+      ti.name = 'assemblePlane';
+      ti.headers = ctx.request.headers;
+      ti.params =  ctx.request.body;
+      ti.response = ctx.body;
+      this.log(ti, id);
       next();
     });
-
-
 
     //auto: deliverPlane
-    router.get('/deliverPlane', async (ctx, next) => {
-      await KoaSend(ctx, '/static/deliverPlane.html');
-      next();
-    });
+
     router.post('/deliverPlane', KoaBody(), async (ctx, next) => {
       let from: string = ctx.request.body['from'];
       let notify: string = ctx.request.body['notify'];
@@ -510,17 +609,28 @@ export class App {
       });
 
       ctx.body = JSON.stringify({delivered: Faker.random.arrayElement(["true", "false"])});
+
+      let id:string=ctx.request.header['cpee-instance'];
+      let ti = new TraceInfo();
+      ti.name = 'deliverPlane';
+      ti.headers = ctx.request.headers;
+      ti.params =  ctx.request.body;
+      ti.response = ctx.body;
+      this.log(ti, id);
       next();
     });
 
     //auto: receiveConfirmation
-    router.get('/receiveConfirmation', async (ctx, next) => {
-      await KoaSend(ctx, '/static/receiveConfirmation.html');
-      next();
-    });
     router.post('/receiveConfirmation', KoaBody(), async (ctx, next) => {
       await this.sleep(2000); //wait for confirmation
       ctx.body = JSON.stringify({confirmed: Faker.random.arrayElement(["true", "false"])});
+      let id:string=ctx.request.header['cpee-instance'];
+      let ti = new TraceInfo();
+      ti.name = 'receiveConfirmation';
+      ti.headers = ctx.request.headers;
+      ti.params =  ctx.request.body;
+      ti.response = ctx.body;
+      this.log(ti, id);
       next();
     });
 
