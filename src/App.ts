@@ -127,7 +127,7 @@ export class App {
     let router = new KoaRouter();
 
     router.get('/', async (ctx, next) => {
-      await KoaSend(ctx, '/static/index.html');
+      await KoaSend(ctx, '/static/worklist.html');
       next();
     });
 

@@ -17,7 +17,7 @@
                     <ul>
                         <div v-if="organisation !== null" class="api list-complete-item">
                             <li    v-for="subject in organisation.subjects[0].subject">
-                                            <router-link :to="{ name: 'main', params: { userName: subject.$['id'] }}">{{ subject.$['id'] }}</router-link>     
+                                            <router-link :to="{ name: 'main', params: { userName: subject.$['id'] }}">{{ subject.$['id'] }} <br/><small>{{ subject.relation[0].$['role'] }}</small></router-link>     
                             </li>
                         </div>
                     </ul>
