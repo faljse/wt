@@ -321,7 +321,6 @@ export class App {
       });
     });
 
-    //manual: customerSendsOrder
     // 2017-12-28T21:26:31.599Z - info: [App] role: {"timeout":"2","role":"customer","organisation":"acme corp","link":"http://faljse.info:9666/customerSendsOrder"}
     router.post('/receive', KoaBody(), async (ctx, next) => {
       let data: ManualTaskData = ctx.request.body;
@@ -348,7 +347,6 @@ export class App {
       task.role=data.role
       task.timeout=data.timeout
       taskList.push(task);
-
       ctx.set('CPEE-CALLBACK', 'true')
       ctx.body = JSON.stringify(ctx.body = {
         name: Faker.fake("{{name.lastName}}, {{name.firstName}} {{name.suffix}}")

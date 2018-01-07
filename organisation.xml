@@ -34,12 +34,26 @@
     </role>
   </roles>
   <subjects>
-    <subject id="susi">
+    <subject id="Niki Lauda">
       <relation unit="executive" role="customer"/>
     </subject>
-    <subject id="franz">
+    <subject id="Test customer">
+      <relation unit="executive" role="customer"/>
+    </subject>
+      <subject id="Stiftung Warentest">
+      <relation unit="executive" role="customer"/>
+    </subject>
+
+    <subject id="Ing. Breitfuß">
       <relation unit="executive" role="engineer"/>
     </subject>
+    <subject id="Howard Wolowitz">
+      <relation unit="executive" role="engineer"/>
+    </subject>
+    <subject id="Ing. Diba">
+      <relation unit="executive" role="engineer"/>
+    </subject>
+
     <subject id="fritz">
       <relation unit="executive" role="support agent"/>
     </subject>
@@ -52,11 +66,15 @@
     <subject id="franziskus">
       <relation unit="executive" role="buyer"/>
     </subject>
-        <subject id="mario">
-      <relation unit="executive" role="engineer"/>
-    </subject>
-        <subject id="luigi">
+    <subject id="Herr Weber">
       <relation unit="executive" role="test pilot"/>
     </subject>
+    <subject id="Luigi">
+      <relation unit="executive" role="test pilot"/>
+    </subject>
+    <subject id="Quack">
+      <relation unit="executive" role="test pilot"/>
+    </subject>
+
   </subjects> 
 </organisation>

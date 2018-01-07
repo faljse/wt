@@ -4,3 +4,10 @@ cd <abgabe>
 npm install
 npm run compile
 npm run start
+
+
+Server app in src/App.ts
+Client app in static/worklist.html
+config.json to set server port
+
+"Root" menu entry shows all tasks for all users
