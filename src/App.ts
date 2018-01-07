@@ -107,7 +107,7 @@ export class App {
       this.organisation=result.organisation;
     });
 
-    this.template = fs.readFileSync('a00626177.xml', 'utf8');
+    this.template = fs.readFileSync('static/a00626177.xml', 'utf8');
     this.koa.listen(this.port);
   }
 
