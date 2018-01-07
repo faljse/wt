@@ -42,7 +42,7 @@
                         <tr  v-for="(item, index) in worklist" class="api list-complete-item">
                             <td> {{ index }} </td>
                             <td v-if="$route.params.userName !== undefined && $route.params.userName !== 'root'"><router-link :to="{ name: item.label, params: { userName: $route.params.userName, id: item.callBackId }}">{{ item.label }}</router-link></td>
-                            <td v-if="$route.params.userName !== undefined || $route.params.userName == 'root'">{{ item.label }}</td>
+                            <td v-if="$route.params.userName == undefined || $route.params.userName == 'root'">{{ item.label }}</td>
                             <td>{{ item.assignedTo }}</td>
                             <td>{{ item.role }}</td>
                             <td>{{ item.callBackId }}</td>

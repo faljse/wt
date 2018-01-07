@@ -253,9 +253,10 @@ export class App {
       let ts = new Date().getTime();
       for (let pair of this.workList.tasks) {
         for(let task of pair[1]) {
-          if(task.callBackId === callBackId)
-            task.assignedTo = userName;
-            task.assignedTimestamp = ts;
+          if(task.callBackId === callBackId) {
+              task.assignedTo = userName;
+              task.assignedTimestamp = ts;
+            }
           }
       }
       ctx.body = "";
