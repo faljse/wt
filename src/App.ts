@@ -132,8 +132,15 @@ export class App {
     });
 
     router.post('/logging', KoaBody(), async (ctx, next) => {
-      fs.appendFileSync('log.txt', 'body: \n'  +  JSON.stringify(ctx.request.body, null, 2))
-      fs.appendFileSync('log.txt', 'header: \n' + JSON.stringify(ctx.request.header, null, 2))
+//      fs.appendFileSync('log.txt', 'body: \n'  +  JSON.stringify(ctx.request.body, null, 2))
+//      fs.appendFileSync('log.txt', 'header: \n' + JSON.stringify(ctx.request.header, null, 2))
+      let id:string = ctx.request.header['cpee-instance']
+      let ti = new TraceInfo()
+      ti.name = 'logging'
+      ti.headers = ctx.request.headers
+      ti.params =  ctx.request.body
+      ti.response = ctx.body
+      this.log(ti, id)
       ctx.response.body='thx!'
       next();
     });

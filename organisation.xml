@@ -43,7 +43,6 @@
       <subject id="Stiftung Warentest">
       <relation unit="executive" role="customer"/>
     </subject>
-
     <subject id="Ing. Breitfuß">
       <relation unit="executive" role="engineer"/>
     </subject>
@@ -53,7 +52,6 @@
     <subject id="Ing. Diba">
       <relation unit="executive" role="engineer"/>
     </subject>
-
     <subject id="fritz">
       <relation unit="executive" role="support agent"/>
     </subject>
@@ -75,6 +73,5 @@
     <subject id="Quack">
       <relation unit="executive" role="test pilot"/>
     </subject>
-
   </subjects> 
 </organisation>
